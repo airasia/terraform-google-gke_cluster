@@ -2,13 +2,9 @@
 # REQUIRED PARAMETERS
 # ----------------------------------------------------------------------------------------------------------------------
 
-variable "tf_env" {
-  description = "Just an identifier that will be used in GCP resource names. Will help us distinguish resources created by Terraform versus resources that were already created before Terraform."
+variable "name_suffix" {
+  description = "An arbitrary suffix that will be added to the resource name(s) for distinguishing purposes."
   type        = string
-  validation {
-    condition     = length(var.tf_env) <= 10
-    error_message = "A max of 10 character(s) are allowed."
-  }
 }
 
 variable "location" {

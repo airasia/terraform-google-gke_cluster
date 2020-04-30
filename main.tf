@@ -1,6 +1,5 @@
 terraform {
   required_version = "0.12.24" # see https://releases.hashicorp.com/terraform/
-  experiments      = [variable_validation]
 }
 
 provider "google" {
@@ -20,8 +19,8 @@ provider "kubernetes" {
 }
 
 locals {
-  cluster_name           = format("gke-%s", var.tf_env)
-  node_pool_name         = format("nodepool-%s", var.tf_env)
+  cluster_name           = format("gke-%s", var.name_suffix)
+  node_pool_name         = format("nodepool-%s", var.name_suffix)
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   service_account_roles = [
@@ -29,7 +28,7 @@ locals {
     "roles/monitoring.metricWriter",
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
-  ingress_ip_name = format("ingress-ip-%s", var.tf_env)
+  ingress_ip_name = format("ingress-ip-%s", var.name_suffix)
 }
 
 resource "google_project_service" "container_api" {
@@ -46,7 +45,7 @@ module "gke_service_account" {
   source            = "airasia/service_account/google"
   version           = "1.0.0"
   providers         = { google = google }
-  tf_env            = var.tf_env
+  tf_env            = var.name_suffix
   account_id        = "gke-sa"
   display_name      = "GKE-ServiceAccount"
   description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
