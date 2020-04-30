@@ -21,6 +21,7 @@ provider "kubernetes" {
 locals {
   cluster_name           = format("gke-%s", var.name_suffix)
   node_pool_name         = format("nodepool-%s", var.name_suffix)
+  ingress_ip_name        = format("ingress-ip-%s", var.name_suffix)
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   service_account_roles = [
@@ -28,7 +29,6 @@ locals {
     "roles/monitoring.metricWriter",
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
-  ingress_ip_name = format("ingress-ip-%s", var.name_suffix)
 }
 
 resource "google_project_service" "container_api" {
@@ -159,7 +159,7 @@ resource "kubernetes_secret" "secrets" {
   data = each.value
 }
 
-resource "google_compute_address" "ingress_external_ip" {
+resource "google_compute_address" "static_ingress_ip" {
   count      = var.create_static_ingress_ip ? 1 : 0
   name       = local.ingress_ip_name
   region     = data.google_client_config.google_client.region
