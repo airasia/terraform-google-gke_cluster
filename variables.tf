@@ -177,3 +177,15 @@ variable "gke_service_account_roles" {
   type        = list(string)
   default     = []
 }
+
+variable "create_static_ingress_ip" {
+  description = "Whether to create a new static IP address for ingress"
+  type        = bool
+  default     = false
+}
+
+variable "ip_address_timeout" {
+  description = "how long a Compute Address operation is allowed to take before being considered a failure."
+  type        = string
+  default     = "5m"
+}

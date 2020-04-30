@@ -29,10 +29,16 @@ locals {
     "roles/monitoring.metricWriter",
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
+  ingress_ip_name = format("ingress-ip-%s", var.tf_env)
 }
 
 resource "google_project_service" "container_api" {
   service            = "container.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "networking_api" {
+  service            = "servicenetworking.googleapis.com"
   disable_on_destroy = false
 }
 
@@ -152,6 +158,17 @@ resource "kubernetes_secret" "secrets" {
     name      = split(":", each.key)[1]
   }
   data = each.value
+}
+
+resource "google_compute_address" "ingress_external_ip" {
+  count      = var.create_static_ingress_ip ? 1 : 0
+  name       = local.ingress_ip_name
+  region     = data.google_client_config.google_client.region
+  depends_on = [google_project_service.networking_api]
+  timeouts {
+    create = var.ip_address_timeout
+    delete = var.ip_address_timeout
+  }
 }
 
 data "google_client_config" "google_client" {}
