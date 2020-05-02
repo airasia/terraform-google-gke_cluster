@@ -5,6 +5,10 @@
 variable "name_suffix" {
   description = "An arbitrary suffix that will be added to the resource name(s) for distinguishing purposes."
   type        = string
+  validation {
+    condition     = length(var.name_suffix) <= 14
+    error_message = "A max of 14 character(s) are allowed."
+  }
 }
 
 variable "location" {
