@@ -160,10 +160,9 @@ resource "kubernetes_secret" "secrets" {
   data = each.value
 }
 
-resource "google_compute_address" "static_ingress_ip" {
+resource "google_compute_global_address" "static_ingress_ip" {
   count      = var.create_static_ingress_ip ? 1 : 0
   name       = local.ingress_ip_name
-  region     = data.google_client_config.google_client.region
   depends_on = [google_project_service.networking_api]
   timeouts {
     create = var.ip_address_timeout
