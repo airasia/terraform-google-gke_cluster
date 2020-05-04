@@ -118,12 +118,6 @@ variable "preemptible" {
   default     = false
 }
 
-variable "initial_node_count" {
-  description = "The initial number of nodes (per zone) for the node pool."
-  type        = number
-  default     = 1
-}
-
 variable "min_node_count" {
   description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
   type        = number
