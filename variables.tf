@@ -143,6 +143,12 @@ variable "max_unavailable" {
   default     = 0
 }
 
+variable "create_auxiliary_node_pool" {
+  description = "Will provision an additional production-grade node_pool. This may cause a surge in your GKE pricing for the duration that this auxiliary pool stays alive. This is meant for temporary use only when an IN-PLACE-UPDATE of the base node_pool is not possible. Create auxiliary pool. TF apply. Make changes to the base node_pool which causes it to be REPLACED. TF apply. Remove auxiliary pool. TF apply."
+  type        = bool
+  default     = false
+}
+
 variable "cluster_logging_service" {
   description = "The logging service to be used by the GKE cluster."
   type        = string

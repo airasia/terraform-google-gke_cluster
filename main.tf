@@ -145,6 +145,50 @@ resource "google_container_node_pool" "node_pool" {
   }
 }
 
+resource "google_container_node_pool" "auxiliary_node_pool" {
+  count              = var.create_auxiliary_node_pool ? 1 : 0
+  provider           = google-beta
+  name               = "aux-${local.node_pool_name}"
+  location           = google_container_cluster.k8s_cluster.location
+  version            = google_container_cluster.k8s_cluster.master_version
+  cluster            = google_container_cluster.k8s_cluster.name
+  /*
+  Intentionally unused fields. Refer to autoscaling values - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
+  initial_node_count = null
+  node_count         = null
+  */
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 15
+  }
+  management {
+    auto_repair  = false
+    auto_upgrade = false
+  }
+  upgrade_settings {
+    max_surge       = 1
+    max_unavailable = 0
+  }
+  node_config {
+    machine_type = "n1-standard-1"
+    disk_type    = "pd-standard"
+    disk_size_gb = 100
+    preemptible  = false
+    labels = {
+      used_for = "gke-aux-node-pool"
+      used_by  = google_container_cluster.k8s_cluster.name
+    }
+    service_account = module.gke_service_account.email
+    oauth_scopes    = ["cloud-platform"]
+  }
+  depends_on = [google_project_service.container_api]
+  timeouts {
+    create = "30m"
+    update = "30m"
+    delete = "30m"
+  }
+}
+
 resource "kubernetes_namespace" "namespaces" {
   depends_on = [google_container_node_pool.node_pool]
   count      = length(var.namespaces)
