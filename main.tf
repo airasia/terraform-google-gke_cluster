@@ -109,7 +109,7 @@ resource "google_container_node_pool" "node_pool" {
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = var.initial_node_count
   autoscaling {
-    min_node_count = var.initial_node_count
+    min_node_count = var.min_node_count
     max_node_count = var.max_node_count
   }
   management {

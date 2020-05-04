@@ -124,6 +124,12 @@ variable "initial_node_count" {
   default     = 1
 }
 
+variable "min_node_count" {
+  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
+  type        = number
+  default     = 1
+}
+
 variable "max_node_count" {
   description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
   type        = number
