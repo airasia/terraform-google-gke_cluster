@@ -125,7 +125,7 @@ variable "initial_node_count" {
 }
 
 variable "max_node_count" {
-  description = "The max number of nodes (per zone) this cluster will allocated if autoscaling occurs."
+  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
   type        = number
   default     = 2
 }
