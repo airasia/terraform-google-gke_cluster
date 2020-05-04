@@ -23,6 +23,7 @@ locals {
   cluster_name           = format("gke-%s", var.name_suffix)
   node_pool_name         = format("nodepool-%s", var.name_suffix)
   ingress_ip_name        = format("ingress-ip-%s", var.name_suffix)
+  location               = var.location == null ? "${data.google_client_config.google_client.region}-a" : var.location
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   service_account_roles = [
@@ -58,7 +59,7 @@ resource "google_container_cluster" "k8s_cluster" {
   # see https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
   name                     = local.cluster_name
   description              = var.cluster_description
-  location                 = var.location
+  location                 = local.location
   network                  = var.vpc_network
   subnetwork               = var.vpc_subnetwork
   min_master_version       = var.gke_master_version
@@ -104,7 +105,7 @@ resource "google_container_cluster" "k8s_cluster" {
 resource "google_container_node_pool" "node_pool" {
   provider           = google-beta
   name               = local.node_pool_name
-  location           = var.location
+  location           = local.location
   version            = google_container_cluster.k8s_cluster.master_version
   cluster            = google_container_cluster.k8s_cluster.name
   /*
