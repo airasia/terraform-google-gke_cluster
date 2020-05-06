@@ -120,7 +120,7 @@ variable "preemptible" {
 }
 
 variable "initial_node_count" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with."
+  description = "The initial number of nodes (per zone) for the node pool to begin with. Will be re-calibrated to equal to min_ndoe_count if min_node_count is set to be greater than initial_node_count."
   type        = number
   default     = 1
 }
