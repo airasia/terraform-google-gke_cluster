@@ -108,11 +108,7 @@ resource "google_container_node_pool" "node_pool" {
   location = local.location
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
-  /*
-  Intentionally unused fields. Refer to autoscaling values - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
-  initial_node_count = null
-  node_count         = null
-  */
+  # node_count = null - Intentionally unused. Refer to autoscaling - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
   autoscaling {
     min_node_count = var.min_node_count
     max_node_count = var.max_node_count
