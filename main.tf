@@ -13,10 +13,6 @@ provider "google-beta" {
 
 provider "kubernetes" {
   version                = "1.11.1" # see https://github.com/terraform-providers/terraform-provider-kubernetes/releases
-  load_config_file       = false
-  host                   = google_container_cluster.k8s_cluster.endpoint
-  token                  = data.google_client_config.google_client.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.k8s_cluster.master_auth.0.cluster_ca_certificate)
 }
 
 locals {
@@ -31,6 +27,9 @@ locals {
     "roles/monitoring.metricWriter",
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
+  location_parts          = split("-", local.location)
+  reversed_location_parts = reverse(local.location_parts)
+  gke_location_flag       = length(local.reversed_location_parts[0]) == 1 ? "zone" : "region"
 }
 
 resource "google_project_service" "container_api" {
@@ -189,8 +188,19 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
   }
 }
 
+# Get cluster credentials
+resource "null_resource" "configure_kubeconfig" {
+  provisioner "local-exec" {
+    command = "gcloud container clusters get-credentials ${local.cluster_name} --${local.gke_location_flag} ${var.location} --project ${data.google_client_config.google_client.project}"
+  }
+
+  depends_on = [
+    google_container_cluster.k8s_cluster
+  ]
+}
+
 resource "kubernetes_namespace" "namespaces" {
-  depends_on = [google_container_node_pool.node_pool]
+  depends_on = [null_resource.configure_kubeconfig]
   count      = length(var.namespaces)
   metadata {
     name   = var.namespaces[count.index].name
