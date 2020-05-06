@@ -103,11 +103,11 @@ resource "google_container_cluster" "k8s_cluster" {
 }
 
 resource "google_container_node_pool" "node_pool" {
-  provider           = google-beta
-  name               = local.node_pool_name
-  location           = local.location
-  version            = google_container_cluster.k8s_cluster.master_version
-  cluster            = google_container_cluster.k8s_cluster.name
+  provider = google-beta
+  name     = local.node_pool_name
+  location = local.location
+  version  = google_container_cluster.k8s_cluster.master_version
+  cluster  = google_container_cluster.k8s_cluster.name
   /*
   Intentionally unused fields. Refer to autoscaling values - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
   initial_node_count = null
@@ -146,12 +146,12 @@ resource "google_container_node_pool" "node_pool" {
 }
 
 resource "google_container_node_pool" "auxiliary_node_pool" {
-  count              = var.create_auxiliary_node_pool ? 1 : 0
-  provider           = google-beta
-  name               = "aux-${local.node_pool_name}"
-  location           = google_container_cluster.k8s_cluster.location
-  version            = google_container_cluster.k8s_cluster.master_version
-  cluster            = google_container_cluster.k8s_cluster.name
+  count    = var.create_auxiliary_node_pool ? 1 : 0
+  provider = google-beta
+  name     = "aux-${local.node_pool_name}"
+  location = google_container_cluster.k8s_cluster.location
+  version  = google_container_cluster.k8s_cluster.master_version
+  cluster  = google_container_cluster.k8s_cluster.name
   /*
   Intentionally unused fields. Refer to autoscaling values - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
   initial_node_count = null
