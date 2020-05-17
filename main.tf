@@ -12,7 +12,7 @@ provider "google-beta" {
 }
 
 provider "kubernetes" {
-  version                = ">= 1.11.1" # see https://github.com/terraform-providers/terraform-provider-kubernetes/releases
+  version                = ">= 1.11.2" # see https://github.com/terraform-providers/terraform-provider-kubernetes/releases
   load_config_file       = false
   host                   = google_container_cluster.k8s_cluster.endpoint
   token                  = data.google_client_config.google_client.access_token
