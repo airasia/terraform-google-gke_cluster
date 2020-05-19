@@ -30,6 +30,8 @@ locals {
   service_account_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
+    "roles/stackdriver.resourceMetadata.writer"
+    # see https://cloud.google.com/monitoring/kubernetes-engine/observing#troubleshooting
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
 }
