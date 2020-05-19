@@ -27,7 +27,7 @@ locals {
   initial_node_count     = var.min_node_count > var.initial_node_count ? var.min_node_count : var.initial_node_count
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
-  service_account_roles = [
+  pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/stackdriver.resourceMetadata.writer"
@@ -54,7 +54,7 @@ module "gke_service_account" {
   account_id        = "gke-sa"
   display_name      = "GKE-ServiceAccount"
   description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
-  roles             = toset(concat(local.service_account_roles, var.gke_service_account_roles))
+  roles             = toset(concat(local.pre_defined_sa_roles, var.gke_service_account_roles))
   module_depends_on = [google_project_service.container_api.id]
 }
 
