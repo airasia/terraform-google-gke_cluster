@@ -197,8 +197,8 @@ variable "namespace_timeout" {
   default     = "5m"
 }
 
-variable "gke_service_account_roles" {
-  description = "IAM Roles that should be given to the service account to be used by GKE. See https://cloud.google.com/iam/docs/understanding-roles."
+variable "sa_roles" {
+  description = "The IAM roles that should be granted to the ServiceAccount which is attached to the GKE node VMs. This will enable the node VMs to access other GCP resources as permitted (or disallowed) by the IAM roles."
   type        = list(string)
   default     = []
 }
