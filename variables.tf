@@ -35,6 +35,18 @@ variable "services_ip_range_name" {
 # OPTIONAL PARAMETERS
 # ----------------------------------------------------------------------------------------------------------------------
 
+variable "cluster_name" {
+  description = "An arbitrary name to identify the k8s cluster."
+  type        = string
+  default     = "k8s"
+}
+
+variable "node_pool_name" {
+  description = "An arbitrary name to identify the GKE node pool and its VMs & VM instance groups."
+  type        = string
+  default     = "gkenp"
+}
+
 variable "gke_master_version" {
   description = "GKE version of the the cluster master to be used. See https://cloud.google.com/kubernetes-engine/docs/release-notes. "
   type        = string

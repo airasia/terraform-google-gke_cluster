@@ -20,8 +20,7 @@ provider "kubernetes" {
 }
 
 locals {
-  cluster_name           = format("gke-%s", var.name_suffix)
-  node_pool_name         = format("nodepool-%s", var.name_suffix)
+  cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name        = format("ingress-ip-%s", var.name_suffix)
   location               = var.location == null ? "${data.google_client_config.google_client.region}-a" : var.location
   initial_node_count     = var.min_node_count > var.initial_node_count ? var.min_node_count : var.initial_node_count
@@ -107,7 +106,7 @@ resource "google_container_cluster" "k8s_cluster" {
 
 resource "google_container_node_pool" "node_pool" {
   provider = google-beta
-  name     = local.node_pool_name
+  name     = var.node_pool_name
   location = local.location
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
@@ -148,7 +147,7 @@ resource "google_container_node_pool" "node_pool" {
 resource "google_container_node_pool" "auxiliary_node_pool" {
   count    = var.create_auxiliary_node_pool ? 1 : 0
   provider = google-beta
-  name     = "aux-${local.node_pool_name}"
+  name     = "aux-${var.node_pool_name}"
   location = google_container_cluster.k8s_cluster.location
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
