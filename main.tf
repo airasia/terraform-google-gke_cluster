@@ -62,6 +62,7 @@ resource "google_container_cluster" "k8s_cluster" {
   name                     = local.cluster_name
   description              = var.cluster_description
   location                 = local.location
+  node_locations           = var.node_zones
   network                  = var.vpc_network
   subnetwork               = var.vpc_subnetwork
   min_master_version       = var.gke_master_version
