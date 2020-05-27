@@ -215,7 +215,7 @@ variable "ip_address_timeout" {
   default     = "5m"
 }
 
-variable "cluster_node_locations" {
+variable "node_zones" {
   description = "The list of zones in which the cluster's nodes are located. Nodes must be in the region of their regional cluster or in the same region as their cluster's zone for zonal clusters. If this is specified for a zonal cluster, omit the cluster's zone. A multi-zonal cluster is a zonal cluster with at least one additional zone defined; in a multi-zonal cluster, the cluster master is only present in a single zone while nodes are present in each of the primary zone and the node locations. In contrast, in a regional cluster, cluster master nodes are present in multiple zones in the region. For that reason, regional clusters should be preferred. https://www.terraform.io/docs/providers/google/r/container_cluster.html#node_locations"
   type        = list(string)
   default     = []
