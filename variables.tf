@@ -65,6 +65,12 @@ variable "location" {
   default     = null
 }
 
+variable "node_zones" {
+  description = "If \"var.location\" specified a zonal cluster, then defining additional zone(s) here (within the same region of course) will make the cluster a multi-zonal cluster. If \"var.location\" specified a regional cluster instead, then defining specific zone(s) here will limit the zone(s) where its node(s) should be launched."
+  type        = list(string)
+  default     = []
+}
+
 variable "master_authorized_networks" {
   description = "External networks that can access the cluster master(s) through HTTPS."
   type = list(object({
@@ -213,10 +219,4 @@ variable "ip_address_timeout" {
   description = "how long a Compute Address operation is allowed to take before being considered a failure."
   type        = string
   default     = "5m"
-}
-
-variable "node_zones" {
-  description = "The list of zones in which the cluster's nodes are located. Nodes must be in the region of their regional cluster or in the same region as their cluster's zone for zonal clusters. If this is specified for a zonal cluster, omit the cluster's zone. A multi-zonal cluster is a zonal cluster with at least one additional zone defined; in a multi-zonal cluster, the cluster master is only present in a single zone while nodes are present in each of the primary zone and the node locations. In contrast, in a regional cluster, cluster master nodes are present in multiple zones in the region. For that reason, regional clusters should be preferred. https://www.terraform.io/docs/providers/google/r/container_cluster.html#node_locations"
-  type        = list(string)
-  default     = []
 }
