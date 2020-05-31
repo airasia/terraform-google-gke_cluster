@@ -137,12 +137,6 @@ variable "preemptible" {
   default     = false
 }
 
-variable "initial_node_count" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Will be re-calibrated to equal to min_ndoe_count if min_node_count is set to be greater than initial_node_count."
-  type        = number
-  default     = 1
-}
-
 variable "min_node_count" {
   description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
   type        = number
@@ -153,6 +147,12 @@ variable "max_node_count" {
   description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
   type        = number
   default     = 2
+}
+
+variable "initial_node_count" {
+  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_count\" and \"var.max_node_count\". Will otherwise be re-calibrated to \"var.min_ndoe_count\" if \"var.min_node_count\" is set to be greater than \"var.initial_node_count\"."
+  type        = number
+  default     = 1
 }
 
 variable "max_surge" {
