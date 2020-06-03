@@ -149,8 +149,8 @@ variable "max_node_count" {
   default     = 2
 }
 
-variable "initial_node_count" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_count\" and \"var.max_node_count\". Will otherwise be re-calibrated to \"var.min_ndoe_count\" if \"var.min_node_count\" is set to be greater than \"var.initial_node_count\"."
+variable "initial_node_per_zone" {
+  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_count\" and \"var.max_node_count\". Will otherwise be re-calibrated to \"var.min_ndoe_count\" if \"var.min_node_count\" is set to be greater than \"var.initial_node_per_zone\"."
   type        = number
   default     = 1
 }

@@ -23,7 +23,7 @@ locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name        = format("ingress-ip-%s", var.name_suffix)
   location               = var.location == null ? "${data.google_client_config.google_client.region}-a" : var.location
-  initial_node_count     = var.min_node_count > var.initial_node_count ? var.min_node_count : var.initial_node_count
+  initial_node_per_zone  = var.min_node_count > var.initial_node_per_zone ? var.min_node_count : var.initial_node_per_zone
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
@@ -112,7 +112,7 @@ resource "google_container_node_pool" "node_pool" {
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
   # node_count = null - Intentionally unused. Refer to autoscaling - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
-  initial_node_count = local.initial_node_count
+  initial_node_count = local.initial_node_per_zone
   autoscaling {
     min_node_count = var.min_node_count
     max_node_count = var.max_node_count
