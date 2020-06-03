@@ -137,7 +137,7 @@ variable "preemptible" {
   default     = false
 }
 
-variable "min_node_count" {
+variable "min_node_per_zone" {
   description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
   type        = number
   default     = 1
@@ -150,7 +150,7 @@ variable "max_node_count" {
 }
 
 variable "initial_node_per_zone" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_count\" and \"var.max_node_count\". Will otherwise be re-calibrated to \"var.min_ndoe_count\" if \"var.min_node_count\" is set to be greater than \"var.initial_node_per_zone\"."
+  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_per_zone\" and \"var.max_node_count\". Will otherwise be re-calibrated to \"var.min_node_per_zone\" if \"var.min_node_per_zone\" is set to be greater than \"var.initial_node_per_zone\"."
   type        = number
   default     = 1
 }
