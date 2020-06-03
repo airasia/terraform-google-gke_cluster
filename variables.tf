@@ -138,13 +138,13 @@ variable "preemptible" {
 }
 
 variable "min_node_per_zone" {
-  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
+  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs. Will be re-calibrated to accommodate \"var.initial_node_per_zone\"."
   type        = number
   default     = 1
 }
 
 variable "max_node_per_zone" {
-  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
+  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs. Will be re-calibrated to accommodate \"var.initial_node_per_zone\"."
   type        = number
   default     = 2
 }
