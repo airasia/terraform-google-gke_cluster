@@ -115,7 +115,7 @@ resource "google_container_node_pool" "node_pool" {
   initial_node_count = local.initial_node_per_zone
   autoscaling {
     min_node_count = var.min_node_per_zone
-    max_node_count = var.max_node_count
+    max_node_count = var.max_node_per_zone
   }
   management {
     auto_repair  = true

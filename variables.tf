@@ -143,14 +143,14 @@ variable "min_node_per_zone" {
   default     = 1
 }
 
-variable "max_node_count" {
+variable "max_node_per_zone" {
   description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
   type        = number
   default     = 2
 }
 
 variable "initial_node_per_zone" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_per_zone\" and \"var.max_node_count\". Will otherwise be re-calibrated to \"var.min_node_per_zone\" if \"var.min_node_per_zone\" is set to be greater than \"var.initial_node_per_zone\"."
+  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_per_zone\" and \"var.max_node_per_zone\". Will otherwise be re-calibrated to \"var.min_node_per_zone\" if \"var.min_node_per_zone\" is set to be greater than \"var.initial_node_per_zone\"."
   type        = number
   default     = 1
 }
