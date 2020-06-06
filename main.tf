@@ -109,7 +109,7 @@ resource "google_container_cluster" "k8s_cluster" {
 resource "google_container_node_pool" "node_pool" {
   provider = google-beta
   name     = var.node_pool_name
-  location = local.location
+  location = google_container_cluster.k8s_cluster.location
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
   # node_count = null - Intentionally unused. Refer to autoscaling - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
