@@ -22,7 +22,6 @@ provider "kubernetes" {
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name        = format("ingress-ip-%s", var.name_suffix)
-  location               = var.location == null ? "${data.google_client_config.google_client.region}-a" : var.location
   min_node_per_zone      = var.min_node_per_zone > var.initial_node_per_zone ? var.initial_node_per_zone : var.min_node_per_zone
   max_node_per_zone      = var.max_node_per_zone < var.initial_node_per_zone ? var.initial_node_per_zone : var.max_node_per_zone
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
@@ -34,6 +33,17 @@ locals {
     # see https://cloud.google.com/monitoring/kubernetes-engine/observing#troubleshooting
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
+  region   = data.google_client_config.google_client.region
+  location = (
+    var.location_type == "REGIONAL" ? local.region : (
+      var.location_type == "ZONAL" ? "${local.region}-${var.locations.0}" : (
+        "bad location_type" # will force an error
+  )))
+  node_locations = (
+    var.location_type == "REGIONAL" ? formatlist("${local.region}-%s", var.locations) : (
+      var.location_type == "ZONAL" ? formatlist("${local.region}-%s", tolist(setsubtract(var.locations, [var.locations.0]))) : (
+        ["bad location_type"] # will force an error
+  )))
 }
 
 resource "google_project_service" "container_api" {
@@ -63,7 +73,7 @@ resource "google_container_cluster" "k8s_cluster" {
   name                     = local.cluster_name
   description              = var.cluster_description
   location                 = local.location
-  node_locations           = var.node_zones
+  node_locations           = local.node_locations
   network                  = var.vpc_network
   subnetwork               = var.vpc_subnetwork
   min_master_version       = var.gke_master_version
