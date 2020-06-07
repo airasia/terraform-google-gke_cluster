@@ -33,7 +33,7 @@ locals {
     # see https://cloud.google.com/monitoring/kubernetes-engine/observing#troubleshooting
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
-  region   = data.google_client_config.google_client.region
+  region = data.google_client_config.google_client.region
   location = (
     var.location_type == "REGIONAL" ? local.region : (
       var.location_type == "ZONAL" ? "${local.region}-${var.locations.0}" : (
