@@ -58,11 +58,11 @@ resource "google_project_service" "networking_api" {
 
 module "gke_service_account" {
   source            = "airasia/service_account/google"
-  version           = "1.2.0"
+  version           = "1.2.1"
   providers         = { google = google }
   name_suffix       = var.name_suffix
-  account_id        = "gke-sa"
-  display_name      = "GKE-ServiceAccount"
+  name              = "gke"
+  display_name      = "GKE"
   description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
   roles             = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
   module_depends_on = [google_project_service.container_api.id]
