@@ -47,6 +47,12 @@ variable "node_pool_name" {
   default     = "gkenp"
 }
 
+variable "ingress_ip_name" {
+  description = "An arbitrary name to identify the Ingress IP of the k8s cluster."
+  type        = string
+  default     = "ingress-ip"
+}
+
 variable "gke_master_version" {
   description = "GKE version of the the cluster master to be used. See https://cloud.google.com/kubernetes-engine/docs/release-notes. "
   type        = string

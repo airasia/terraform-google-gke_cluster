@@ -21,7 +21,7 @@ provider "kubernetes" {
 
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
-  ingress_ip_name        = format("ingress-ip-%s", var.name_suffix)
+  ingress_ip_name        = format("%s-%s", var.ingress_ip_name, var.name_suffix)
   min_node_per_zone      = var.min_node_per_zone > var.initial_node_per_zone ? var.initial_node_per_zone : var.min_node_per_zone
   max_node_per_zone      = var.max_node_per_zone < var.initial_node_per_zone ? var.initial_node_per_zone : var.max_node_per_zone
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
