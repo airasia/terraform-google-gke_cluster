@@ -53,6 +53,12 @@ variable "ingress_ip_name" {
   default     = "ingress-ip"
 }
 
+variable "sa_name" {
+  description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the k8s cluster nodes."
+  type        = string
+  default     = "gke"
+}
+
 variable "gke_master_version" {
   description = "GKE version of the the cluster master to be used. See https://cloud.google.com/kubernetes-engine/docs/release-notes. "
   type        = string

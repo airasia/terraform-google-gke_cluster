@@ -61,8 +61,8 @@ module "gke_service_account" {
   version           = "1.2.1"
   providers         = { google = google }
   name_suffix       = var.name_suffix
-  name              = "gke"
-  display_name      = "GKE"
+  name              = var.sa_name
+  display_name      = var.sa_name
   description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
   roles             = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
   module_depends_on = [google_project_service.container_api.id]
