@@ -48,7 +48,7 @@ variable "node_pool_name" {
 }
 
 variable "ingress_ip_name" {
-  description = "An arbitrary name to identify the Ingress IP of the k8s cluster."
+  description = "An arbitrary name to identify the Ingress IP that will be generated for the k8s cluster if \"var.create_static_ingress_ip\" is set to \"true\"."
   type        = string
   default     = "ingress-ip"
 }
