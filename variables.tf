@@ -150,7 +150,7 @@ variable "preemptible" {
 }
 
 variable "node_count_initial_per_zone" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\". Should only be used during creation time as modifying it later will force a recreation of the existing node_pool - use \"var.current_node_per_zone\" instead to modify current size after creation if necessary."
+  description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\". Should only be used during creation time as modifying it later will force a recreation of the existing node_pool - use \"var.node_count_current_per_zone\" instead to modify current size after creation if necessary."
   type        = number
   default     = 1
 }
@@ -167,8 +167,8 @@ variable "node_count_max_per_zone" {
   default     = 2
 }
 
-variable "current_node_per_zone" {
-  description = "Can be used to modify the current number of nodes (per zone) as long as the value is between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\". Do not modify this value WHILE modifying  \"var.node_count_min_per_zone\" or \"var.node_count_max_per_zone\" - run 2 separate 'terraform apply' commands to modify \"var.node_count_min_per_zone\"/\"var.node_count_max_per_zone\" in one command and \"var.current_node_per_zone\" in another command. Should be the same value as \"var.initial_node_count\" when starting out."
+variable "node_count_current_per_zone" {
+  description = "Can be used to modify the current number of nodes (per zone) as long as the value is between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\". Do not modify this value WHILE modifying  \"var.node_count_min_per_zone\" or \"var.node_count_max_per_zone\" - run 2 separate 'terraform apply' commands to modify \"var.node_count_min_per_zone\"/\"var.node_count_max_per_zone\" in one command and \"var.node_count_current_per_zone\" in another command. Should be the same value as \"var.initial_node_count\" when starting out."
   type        = number
   default     = 1
 }

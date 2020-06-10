@@ -123,7 +123,7 @@ resource "google_container_node_pool" "node_pool" {
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
   initial_node_count = var.node_count_initial_per_zone
-  node_count = var.current_node_per_zone
+  node_count = var.node_count_current_per_zone
   autoscaling {
     min_node_count = local.node_count_min_per_zone
     max_node_count = local.node_count_max_per_zone
