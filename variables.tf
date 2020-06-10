@@ -168,9 +168,9 @@ variable "node_count_max_per_zone" {
 }
 
 variable "node_count_current_per_zone" {
-  description = "Can be used to modify the current number of nodes (per zone) as long as the value is between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\" (inclusive). Do not modify this value WHILE modifying  \"var.node_count_min_per_zone\" or \"var.node_count_max_per_zone\" - run 2 separate 'terraform apply' commands to modify \"var.node_count_min_per_zone\"/\"var.node_count_max_per_zone\" in one command and \"var.node_count_current_per_zone\" in another command. Should be the same value as \"var.initial_node_count\" when starting out."
+  description = "Must use \"null\" when creating the cluster for the first time. Can later be used to modify the current number of nodes (per zone) as long as the value is between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\" (inclusive). Do not modify this value WHILE modifying  \"var.node_count_min_per_zone\" or \"var.node_count_max_per_zone\" - run 2 separate 'terraform apply' commands to modify \"var.node_count_min_per_zone\"/\"var.node_count_max_per_zone\" in one command and \"var.node_count_current_per_zone\" in another command."
   type        = number
-  default     = 1
+  default     = null
 }
 
 variable "max_surge" {
