@@ -149,20 +149,20 @@ variable "preemptible" {
   default     = false
 }
 
-variable "initial_node_per_zone" {
+variable "node_count_initial_per_zone" {
   description = "The initial number of nodes (per zone) for the node pool to begin with. Expected to be a value between \"var.min_node_per_zone\" and \"var.max_node_per_zone\". Should only be used during creation time as modifying it later will force a recreation of the existing node_pool - use \"var.current_node_per_zone\" instead to modify current size after creation if necessary."
   type        = number
   default     = 1
 }
 
 variable "min_node_per_zone" {
-  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs. Will be re-calibrated to accommodate \"var.initial_node_per_zone\"."
+  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs. Will be re-calibrated to accommodate \"var.node_count_initial_per_zone\"."
   type        = number
   default     = 1
 }
 
 variable "max_node_per_zone" {
-  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs. Will be re-calibrated to accommodate \"var.initial_node_per_zone\"."
+  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs. Will be re-calibrated to accommodate \"var.node_count_initial_per_zone\"."
   type        = number
   default     = 2
 }
