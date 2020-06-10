@@ -34,7 +34,7 @@ locals {
     # see https://www.terraform.io/docs/providers/google/r/container_cluster.html#service_account-1
   ]
   region = data.google_client_config.google_client.region
-  location = (
+  gke_location = (
     var.location_type == "REGIONAL" ? local.region : (
       var.location_type == "ZONAL" ? "${local.region}-${var.locations.0}" : (
         "bad location_type" # will force an error
@@ -72,7 +72,7 @@ resource "google_container_cluster" "k8s_cluster" {
   # see https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
   name                     = local.cluster_name
   description              = var.cluster_description
-  location                 = local.location
+  location                 = local.gke_location
   node_locations           = local.node_locations
   network                  = var.vpc_network
   subnetwork               = var.vpc_subnetwork
