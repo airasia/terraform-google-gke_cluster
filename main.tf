@@ -20,12 +20,12 @@ provider "kubernetes" {
 }
 
 locals {
-  cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
-  ingress_ip_name        = format("%s-%s", var.ingress_ip_name, var.name_suffix)
-  node_count_min_per_zone      = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
-  node_count_max_per_zone      = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
-  oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
-  master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
+  cluster_name            = format("%s-%s", var.cluster_name, var.name_suffix)
+  ingress_ip_name         = format("%s-%s", var.ingress_ip_name, var.name_suffix)
+  node_count_min_per_zone = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
+  node_count_max_per_zone = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
+  oauth_scopes            = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
+  master_private_ip_cidr  = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
@@ -117,13 +117,13 @@ resource "google_container_cluster" "k8s_cluster" {
 }
 
 resource "google_container_node_pool" "node_pool" {
-  provider = google-beta
-  name     = var.node_pool_name
-  location = google_container_cluster.k8s_cluster.location
-  version  = google_container_cluster.k8s_cluster.master_version
-  cluster  = google_container_cluster.k8s_cluster.name
+  provider           = google-beta
+  name               = var.node_pool_name
+  location           = google_container_cluster.k8s_cluster.location
+  version            = google_container_cluster.k8s_cluster.master_version
+  cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = var.node_count_initial_per_zone
-  node_count = var.node_count_current_per_zone
+  node_count         = var.node_count_current_per_zone
   autoscaling {
     min_node_count = local.node_count_min_per_zone
     max_node_count = local.node_count_max_per_zone
@@ -157,14 +157,14 @@ resource "google_container_node_pool" "node_pool" {
 }
 
 resource "google_container_node_pool" "auxiliary_node_pool" {
-  count    = var.create_auxiliary_node_pool ? 1 : 0
-  provider = google-beta
-  name     = "aux-${var.node_pool_name}"
-  location = google_container_cluster.k8s_cluster.location
-  version  = google_container_cluster.k8s_cluster.master_version
-  cluster  = google_container_cluster.k8s_cluster.name
+  count              = var.create_auxiliary_node_pool ? 1 : 0
+  provider           = google-beta
+  name               = "aux-${var.node_pool_name}"
+  location           = google_container_cluster.k8s_cluster.location
+  version            = google_container_cluster.k8s_cluster.master_version
+  cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = 1
-  node_count = 1
+  node_count         = 1
   autoscaling {
     min_node_count = 1
     max_node_count = 15
