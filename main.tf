@@ -123,7 +123,7 @@ resource "google_container_node_pool" "node_pool" {
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
   initial_node_count = var.initial_node_per_zone
-  # node_count = null - Intentionally unused. Refer to autoscaling - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
+  node_count = var.current_node_per_zone
   autoscaling {
     min_node_count = local.min_node_per_zone
     max_node_count = local.max_node_per_zone
@@ -164,7 +164,7 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
   version  = google_container_cluster.k8s_cluster.master_version
   cluster  = google_container_cluster.k8s_cluster.name
   initial_node_count = 1
-  # node_count = null - Intentionally unused. Refer to autoscaling - see https://www.terraform.io/docs/providers/google/r/container_node_pool.html#node_count
+  node_count = 1
   autoscaling {
     min_node_count = 1
     max_node_count = 15
