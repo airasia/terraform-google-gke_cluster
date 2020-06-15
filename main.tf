@@ -22,6 +22,7 @@ provider "kubernetes" {
 locals {
   cluster_name            = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name         = format("%s-%s", var.ingress_ip_name, var.name_suffix)
+  node_count_current_per_zone = var.node_count_current_per_zone == 0 ? null : var.node_count_current_per_zone
   node_count_min_per_zone = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
   node_count_max_per_zone = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
   oauth_scopes            = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
@@ -123,7 +124,7 @@ resource "google_container_node_pool" "node_pool" {
   version            = google_container_cluster.k8s_cluster.master_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = var.node_count_initial_per_zone
-  node_count         = var.node_count_current_per_zone
+  node_count         = local.node_count_current_per_zone
   autoscaling {
     min_node_count = local.node_count_min_per_zone
     max_node_count = local.node_count_max_per_zone
