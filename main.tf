@@ -45,6 +45,11 @@ locals {
       var.location_type == "ZONAL" ? formatlist("${local.region}-%s", tolist(setsubtract(var.locations, [var.locations.0]))) : (
         ["bad location_type"] # will force an error
   )))
+
+  # DO NOT rely on google_container_cluster.k8s_cluster.master_version to determine the value of gke_node_version.
+  # Otherwise, a RE-RUN of 'terraform apply' will be required for the changes
+  # to first be applied on the k8s masters, and then for that change to be detected (and applied) on the k8s nodes.
+  gke_node_version = var.gke_master_version
 }
 
 resource "google_project_service" "container_api" {
@@ -121,7 +126,7 @@ resource "google_container_node_pool" "node_pool" {
   provider           = google-beta
   name               = var.node_pool_name
   location           = google_container_cluster.k8s_cluster.location
-  version            = google_container_cluster.k8s_cluster.master_version
+  version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = var.node_count_initial_per_zone
   node_count         = local.node_count_current_per_zone
@@ -162,7 +167,7 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
   provider           = google-beta
   name               = "aux-${var.node_pool_name}"
   location           = google_container_cluster.k8s_cluster.location
-  version            = google_container_cluster.k8s_cluster.master_version
+  version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = 1
   node_count         = 1
