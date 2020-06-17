@@ -125,7 +125,7 @@ resource "google_container_cluster" "k8s_cluster" {
 resource "google_container_node_pool" "node_pool" {
   provider           = google-beta
   name               = var.node_pool_name
-  location           = google_container_cluster.k8s_cluster.location
+  location           = local.gke_location
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = var.node_count_initial_per_zone
@@ -166,7 +166,7 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
   count              = var.create_auxiliary_node_pool ? 1 : 0
   provider           = google-beta
   name               = "aux-${var.node_pool_name}"
-  location           = google_container_cluster.k8s_cluster.location
+  location           = local.gke_location
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = 1
