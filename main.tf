@@ -171,7 +171,7 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
     max_node_count = 15
   }
   management {
-    auto_repair  = false
+    auto_repair  = true
     auto_upgrade = false
   }
   upgrade_settings {
