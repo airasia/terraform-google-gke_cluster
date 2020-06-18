@@ -53,6 +53,12 @@ variable "ingress_ip_name" {
   default     = "ingress-ip"
 }
 
+variable "istio_ip_name" {
+  description = "An arbitrary name to identify the Istio IP that will be generated for the k8s cluster if \"var.create_static_istio_ip\" is set to \"true\"."
+  type        = string
+  default     = "istio-ip"
+}
+
 variable "sa_name" {
   description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the k8s cluster nodes."
   type        = string
@@ -229,6 +235,12 @@ variable "sa_roles" {
 
 variable "create_static_ingress_ip" {
   description = "Whether to create a new static IP address for ingress"
+  type        = bool
+  default     = false
+}
+
+variable "create_static_istio_ip" {
+  description = "Whether to create a new static IP address for istio"
   type        = bool
   default     = false
 }

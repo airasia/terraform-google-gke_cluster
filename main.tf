@@ -22,6 +22,7 @@ provider "kubernetes" {
 locals {
   cluster_name                = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name             = format("%s-%s", var.ingress_ip_name, var.name_suffix)
+  istio_ip_name               = format("%s-%s", var.istio_ip_name, var.name_suffix)
   node_count_current_per_zone = var.node_count_current_per_zone == 0 ? null : var.node_count_current_per_zone
   node_count_min_per_zone     = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
   node_count_max_per_zone     = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
@@ -226,6 +227,16 @@ resource "kubernetes_secret" "secrets" {
 resource "google_compute_global_address" "static_ingress_ip" {
   count      = var.create_static_ingress_ip ? 1 : 0
   name       = local.ingress_ip_name
+  depends_on = [google_project_service.networking_api]
+  timeouts {
+    create = var.ip_address_timeout
+    delete = var.ip_address_timeout
+  }
+}
+
+resource "google_compute_address" "static_istio_ip" {
+  count      = var.create_static_istio_ip ? 1 : 0
+  name       = local.istio_ip_name
   depends_on = [google_project_service.networking_api]
   timeouts {
     create = var.ip_address_timeout
