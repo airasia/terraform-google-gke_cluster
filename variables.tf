@@ -54,13 +54,13 @@ variable "ingress_ip_name" {
 }
 
 variable "istio_ip_name" {
-  description = "An arbitrary name to identify the Istio IP that will be generated for the k8s cluster if \"var.create_static_istio_ip\" is set to \"true\"."
+  description = "An arbitrary name to identify the Istio IP that will be generated for the k8s cluster if \"var.create_istio_components\" is set to \"true\"."
   type        = string
   default     = "istio-ip"
 }
 
 variable "istioctl_firewall_name" {
-  description = "An arbitrary name to identify the IstioCtl firewall that will be generated for the k8s cluster if \"var.create_static_istio_ip\" is set to \"true\"."
+  description = "An arbitrary name to identify the IstioCtl firewall that will be generated for the k8s cluster if \"var.create_istio_components\" is set to \"true\"."
   type        = string
   default     = "allow-istioctl"
 }
@@ -263,8 +263,8 @@ variable "create_static_ingress_ip" {
   default     = false
 }
 
-variable "create_static_istio_ip" {
-  description = "Whether to create a new static IP address for istio"
+variable "create_istio_components" {
+  description = "Whether to create GCP resources to use istio ingress. For example, \"istio_ip\", \"istioctl_firewall\" etc."
   type        = bool
   default     = false
 }

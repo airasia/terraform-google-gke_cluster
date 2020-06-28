@@ -246,7 +246,7 @@ resource "google_compute_global_address" "static_ingress_ip" {
 }
 
 resource "google_compute_address" "static_istio_ip" {
-  count      = var.create_static_istio_ip ? 1 : 0
+  count      = var.create_istio_components ? 1 : 0
   name       = local.istio_ip_name
   depends_on = [google_project_service.networking_api]
   timeouts {
@@ -256,6 +256,7 @@ resource "google_compute_address" "static_istio_ip" {
 }
 
 resource "google_compute_firewall" "istioctl_firewall" {
+  count         = var.create_istio_components ? 1 : 0
   name          = local.istioctl_firewall_name
   network       = var.vpc_network
   source_ranges = local.istioctl_allowed_IPs
