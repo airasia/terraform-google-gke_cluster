@@ -203,6 +203,7 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
     }
     service_account = module.gke_service_account.email
     oauth_scopes    = ["cloud-platform"]
+    tags            = local.node_network_tags
   }
   depends_on = [google_project_service.container_api]
   timeouts {
