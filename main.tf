@@ -171,7 +171,7 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = 1
-  node_count         = 1
+  node_count         = null
   autoscaling {
     min_node_count = 1
     max_node_count = 15
