@@ -23,6 +23,7 @@ locals {
   cluster_name                = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name             = format("%s-%s", var.ingress_ip_name, var.name_suffix)
   istio_ip_name               = format("%s-%s", var.istio_ip_name, var.name_suffix)
+  node_network_tags           = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   node_count_current_per_zone = var.node_count_current_per_zone == 0 ? null : var.node_count_current_per_zone
   node_count_min_per_zone     = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
   node_count_max_per_zone     = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
@@ -51,6 +52,12 @@ locals {
   # Otherwise, a RE-RUN of 'terraform apply' will be required for the changes
   # to first be applied on the k8s masters, and then for that change to be detected (and applied) on the k8s nodes.
   gke_node_version = var.gke_master_version
+}
+
+resource "random_string" "network_tag_substring" {
+  length  = 6
+  special = false
+  upper   = false
 }
 
 resource "google_project_service" "container_api" {
@@ -154,6 +161,7 @@ resource "google_container_node_pool" "node_pool" {
     }
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
+    tags            = local.node_network_tags
   }
   depends_on = [google_project_service.container_api]
   timeouts {
