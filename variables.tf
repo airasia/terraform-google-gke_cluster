@@ -59,6 +59,12 @@ variable "istio_ip_name" {
   default     = "istio-ip"
 }
 
+variable "istioctl_firewall_name" {
+  description = "An arbitrary name to identify the IstioCtl firewall that will be generated for the k8s cluster if \"var.create_static_istio_ip\" is set to \"true\"."
+  type        = string
+  default     = "allow-istioctl"
+}
+
 variable "sa_name" {
   description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the k8s cluster nodes."
   type        = string

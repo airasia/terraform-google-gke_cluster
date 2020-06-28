@@ -23,12 +23,14 @@ locals {
   cluster_name                = format("%s-%s", var.cluster_name, var.name_suffix)
   ingress_ip_name             = format("%s-%s", var.ingress_ip_name, var.name_suffix)
   istio_ip_name               = format("%s-%s", var.istio_ip_name, var.name_suffix)
+  istioctl_firewall_name      = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
   node_network_tags           = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   node_count_current_per_zone = var.node_count_current_per_zone == 0 ? null : var.node_count_current_per_zone
   node_count_min_per_zone     = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
   node_count_max_per_zone     = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
   oauth_scopes                = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr      = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
+  istioctl_allowed_IPs        = [for authorized_network in var.master_authorized_networks : authorized_network.cidr_block]
   pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
@@ -250,6 +252,19 @@ resource "google_compute_address" "static_istio_ip" {
   timeouts {
     create = var.ip_address_timeout
     delete = var.ip_address_timeout
+  }
+}
+
+resource "google_compute_firewall" "istioctl_firewall" {
+  name          = local.istioctl_firewall_name
+  network       = var.vpc_network
+  source_ranges = local.istioctl_allowed_IPs
+  target_tags   = local.node_network_tags
+  depends_on    = [google_container_node_pool.node_pool, google_project_service.networking_api]
+  allow {
+    # see https://istio.io/latest/docs/setup/platform-setup/gke/
+    protocol = "tcp"
+    ports    = ["10250", "443", "15017"]
   }
 }
 
