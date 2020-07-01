@@ -30,7 +30,6 @@ locals {
   node_count_max_per_zone     = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
   oauth_scopes                = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr      = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
-  istioctl_allowed_IPs        = [for authorized_network in var.master_authorized_networks : authorized_network.cidr_block]
   pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
@@ -259,7 +258,7 @@ resource "google_compute_firewall" "istioctl_firewall" {
   count         = var.create_istio_components ? 1 : 0
   name          = local.istioctl_firewall_name
   network       = var.vpc_network
-  source_ranges = local.istioctl_allowed_IPs
+  source_ranges = [local.master_private_ip_cidr]
   target_tags   = local.node_network_tags
   depends_on    = [google_container_node_pool.node_pool, google_project_service.networking_api]
   allow {
