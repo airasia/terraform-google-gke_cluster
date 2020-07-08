@@ -170,11 +170,11 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
   location           = local.gke_location
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
-  initial_node_count = 1
+  initial_node_count = var.auxiliary_node_pool_config.node_count_initial_per_zone
   node_count         = null
   autoscaling {
-    min_node_count = 1
-    max_node_count = 15
+    min_node_count = var.auxiliary_node_pool_config.node_count_min_per_zone
+    max_node_count = var.auxiliary_node_pool_config.node_count_max_per_zone
   }
   management {
     auto_repair  = true
@@ -185,9 +185,9 @@ resource "google_container_node_pool" "auxiliary_node_pool" {
     max_unavailable = 0
   }
   node_config {
-    machine_type = "n1-standard-1"
+    machine_type = var.auxiliary_node_pool_config.machine_type
     disk_type    = "pd-standard"
-    disk_size_gb = 100
+    disk_size_gb = var.auxiliary_node_pool_config.disk_size_gb
     preemptible  = false
     labels = {
       used_for = "gke-aux-node-pool"
