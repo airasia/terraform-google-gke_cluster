@@ -192,7 +192,7 @@ variable "max_unavailable" {
 }
 
 variable "create_auxiliary_node_pool" {
-  description = "Will provision an additional production-grade node_pool. This may cause a surge in your GKE pricing for the duration that this auxiliary pool stays alive. This is meant for temporary use only when an IN-PLACE-UPDATE of the base node_pool is not possible. Create auxiliary pool. TF apply. Make changes to the base node_pool which causes it to be REPLACED. TF apply. Remove auxiliary pool. TF apply."
+  description = "Will provision an additional production-grade node_pool. This may cause a surge in your GKE pricing for the duration that this auxiliary node pool stays alive. This is meant for temporary use only when an IN-PLACE-UPDATE of the base node pool is not possible. Create auxiliary node pool. TF apply. Make changes to the base node pool. TF apply. Remove auxiliary node pool. TF apply."
   type        = bool
   default     = false
 }
