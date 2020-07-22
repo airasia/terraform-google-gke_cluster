@@ -105,7 +105,7 @@ variable "master_authorized_networks" {
 }
 
 variable "enable_public_endpoint" {
-  description = "Allows access through the public endpoint of cluster master. Keep it 'true' if you have 'master_authorized_networks_config.cidr_blocks' in the k8s cluster. See https://stackoverflow.com/a/57814380/636762."
+  description = "Allows access through the public endpoint of cluster master. Keep it 'true' if you have 'master_authorized_networks_config.cidr_blocks' in the k8s cluster."
   type        = bool
   default     = true
 }
