@@ -98,7 +98,7 @@ resource "google_container_cluster" "k8s_cluster" {
   remove_default_node_pool = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = var.enable_private_endpoint
+    enable_private_endpoint = ! var.enable_public_endpoint
     master_ipv4_cidr_block  = local.master_private_ip_cidr
   }
   ip_allocation_policy {
