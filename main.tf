@@ -26,8 +26,6 @@ locals {
   istioctl_firewall_name      = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
   node_network_tags           = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   node_count_current_per_zone = var.node_count_current_per_zone == 0 ? null : var.node_count_current_per_zone
-  node_count_min_per_zone     = var.node_count_min_per_zone > var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_min_per_zone
-  node_count_max_per_zone     = var.node_count_max_per_zone < var.node_count_initial_per_zone ? var.node_count_initial_per_zone : var.node_count_max_per_zone
   oauth_scopes                = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr      = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
@@ -140,8 +138,8 @@ resource "google_container_node_pool" "node_pool" {
   initial_node_count = var.node_count_initial_per_zone
   node_count         = local.node_count_current_per_zone
   autoscaling {
-    min_node_count = local.node_count_min_per_zone
-    max_node_count = local.node_count_max_per_zone
+    min_node_count = var.node_count_min_per_zone
+    max_node_count = var.node_count_max_per_zone
   }
   management {
     auto_repair  = true
