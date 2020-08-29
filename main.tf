@@ -2,14 +2,6 @@ terraform {
   required_version = ">= 0.13.1" # see https://releases.hashicorp.com/terraform/
 }
 
-provider "google" {
-  version = ">= 3.13.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
-}
-
-provider "google-beta" {
-  version = ">= 3.13.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
-}
-
 provider "kubernetes" {
   version                = ">= 1.12.0" # see https://github.com/terraform-providers/terraform-provider-kubernetes/releases
   load_config_file       = false
