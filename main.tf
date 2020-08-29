@@ -1,6 +1,5 @@
 terraform {
-  required_version = ">= 0.12.24" # see https://releases.hashicorp.com/terraform/
-  experiments      = [variable_validation]
+  required_version = ">= 0.13.1" # see https://releases.hashicorp.com/terraform/
 }
 
 provider "google" {
