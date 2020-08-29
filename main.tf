@@ -62,14 +62,14 @@ resource "google_project_service" "networking_api" {
 
 module "gke_service_account" {
   source            = "airasia/service_account/google"
-  version           = "1.2.1"
+  version           = "2.0.0"
   providers         = { google = google }
   name_suffix       = var.name_suffix
   name              = var.sa_name
   display_name      = var.sa_name
   description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
   roles             = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
-  module_depends_on = [google_project_service.container_api.id]
+  depends_on        = [google_project_service.container_api.id]
 }
 
 resource "google_container_cluster" "k8s_cluster" {
