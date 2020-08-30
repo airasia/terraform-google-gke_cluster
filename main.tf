@@ -63,7 +63,6 @@ resource "google_project_service" "networking_api" {
 module "gke_service_account" {
   source            = "airasia/service_account/google"
   version           = "2.0.0"
-  providers         = { google = google }
   name_suffix       = var.name_suffix
   name              = var.sa_name
   display_name      = var.sa_name
