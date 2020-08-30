@@ -69,7 +69,7 @@ module "gke_service_account" {
   display_name      = var.sa_name
   description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
   roles             = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
-  depends_on        = [google_project_service.container_api.id]
+  depends_on        = [google_project_service.container_api]
 }
 
 resource "google_container_cluster" "k8s_cluster" {
