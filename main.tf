@@ -61,14 +61,14 @@ resource "google_project_service" "networking_api" {
 }
 
 module "gke_service_account" {
-  source            = "airasia/service_account/google"
-  version           = "2.0.0"
-  name_suffix       = var.name_suffix
-  name              = var.sa_name
-  display_name      = var.sa_name
-  description       = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
-  roles             = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
-  depends_on        = [google_project_service.container_api]
+  source       = "airasia/service_account/google"
+  version      = "2.0.0"
+  name_suffix  = var.name_suffix
+  name         = var.sa_name
+  display_name = var.sa_name
+  description  = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
+  roles        = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
+  depends_on   = [google_project_service.container_api]
 }
 
 resource "google_container_cluster" "k8s_cluster" {
