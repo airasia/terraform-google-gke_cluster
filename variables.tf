@@ -47,10 +47,10 @@ variable "node_pool_name" {
   default     = "gkenp"
 }
 
-variable "ingress_ip_name" {
-  description = "An arbitrary name to identify the Ingress IP that will be generated for the k8s cluster if \"var.create_static_ingress_ip\" is set to \"true\"."
-  type        = string
-  default     = "ingress-ip"
+variable "ingress_ip_names" {
+  description = "Arbitrary names for list of static Ingress IPs to be created for the GKE cluster. Use empty list to avoid creating static Ingress IPs."
+  type        = list(string)
+  default     = []
 }
 
 variable "istio_ip_name" {
@@ -255,12 +255,6 @@ variable "sa_roles" {
   description = "The IAM roles that should be granted to the ServiceAccount which is attached to the GKE node VMs. This will enable the node VMs to access other GCP resources as permitted (or disallowed) by the IAM roles."
   type        = list(string)
   default     = []
-}
-
-variable "create_static_ingress_ip" {
-  description = "Whether to create a new static IP address for ingress"
-  type        = bool
-  default     = false
 }
 
 variable "create_istio_components" {

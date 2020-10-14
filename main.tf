@@ -12,7 +12,6 @@ provider "kubernetes" {
 
 locals {
   cluster_name                = format("%s-%s", var.cluster_name, var.name_suffix)
-  ingress_ip_name             = format("%s-%s", var.ingress_ip_name, var.name_suffix)
   istio_ip_name               = format("%s-%s", var.istio_ip_name, var.name_suffix)
   istioctl_firewall_name      = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
   node_network_tags           = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
@@ -223,8 +222,8 @@ resource "kubernetes_secret" "secrets" {
 }
 
 resource "google_compute_global_address" "static_ingress_ip" {
-  count      = var.create_static_ingress_ip ? 1 : 0
-  name       = local.ingress_ip_name
+  count      = length(var.ingress_ip_names)
+  name       = format("ingress-%s-%s", var.ingress_ip_names[count.index], var.name_suffix)
   depends_on = [google_project_service.networking_api]
   timeouts {
     create = var.ip_address_timeout
