@@ -49,6 +49,11 @@ resource "random_string" "network_tag_substring" {
   upper   = false
 }
 
+resource "google_project_service" "gcr_api" {
+  service            = "containerregistry.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_project_service" "container_api" {
   service            = "container.googleapis.com"
   disable_on_destroy = false
