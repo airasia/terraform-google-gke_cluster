@@ -152,7 +152,7 @@ variable "disk_type" {
 variable "disk_size_gb" {
   description = "Size of the disk on each node in Giga Bytes."
   type        = number
-  default     = 10
+  default     = 50
 }
 
 variable "preemptible" {
@@ -217,7 +217,7 @@ variable "auxiliary_node_pool_config" {
     node_count_min_per_zone     = 1
     node_count_max_per_zone     = 2
     machine_type                = "e2-micro"
-    disk_size_gb                = 10
+    disk_size_gb                = 50
   }
 }
 
