@@ -41,12 +41,6 @@ variable "cluster_name" {
   default     = "k8s"
 }
 
-variable "node_pool_name" {
-  description = "An arbitrary name to identify the GKE node pool and its VMs & VM instance groups."
-  type        = string
-  default     = "gkenp"
-}
-
 variable "ingress_ip_names" {
   description = "Arbitrary names for list of static Ingress IPs to be created for the GKE cluster. Use empty list to avoid creating static Ingress IPs."
   type        = list(string)
@@ -135,54 +129,6 @@ variable "enable_addon_horizontal_pod_autoscaling" {
   description = "Whether to enable Horizontal Pod Autoscaling addon which autoscales based on usage of pods."
   type        = bool
   default     = true
-}
-
-variable "machine_type" {
-  description = "The size of VM for each node. See https://cloud.google.com/compute/docs/machine-types."
-  type        = string
-  default     = "e2-micro"
-}
-
-variable "disk_type" {
-  description = "Type of the disk for each nodes. It can also be `pd-ssd`, which is more costly."
-  type        = string
-  default     = "pd-standard"
-}
-
-variable "disk_size_gb" {
-  description = "Size of the disk on each node in Giga Bytes."
-  type        = number
-  default     = 50
-}
-
-variable "preemptible" {
-  description = "Preemptible nodes last a maximum of 24 hours and provide no availability guarantees - like spot instances in AWS."
-  type        = bool
-  default     = false
-}
-
-variable "node_count_initial_per_zone" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Should only be used during creation time as modifying it later will force a recreation of the existing node_pool - use \"var.node_count_current_per_zone\" instead to modify current size after creation if necessary."
-  type        = number
-  default     = 1
-}
-
-variable "node_count_min_per_zone" {
-  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
-  type        = number
-  default     = 1
-}
-
-variable "node_count_max_per_zone" {
-  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
-  type        = number
-  default     = 2
-}
-
-variable "node_count_current_per_zone" {
-  description = "Must use 0 or \"null\" when creating the cluster for the first time. Can later be used to modify the current number of nodes (per zone) as long as the value is between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\" (inclusive). (If you must set the number of nodes upon initial creation, then please use \"var.node_count_initial_per_zone\" instead which is an immutable value - see description of \"var.node_count_initial_per_zone\".) Do not modify this value WHILE modifying  \"var.node_count_min_per_zone\" or \"var.node_count_max_per_zone\" - run 2 separate 'terraform apply' commands to modify \"var.node_count_min_per_zone\"/\"var.node_count_max_per_zone\" in one command and \"var.node_count_current_per_zone\" in another command."
-  type        = number
-  default     = 0
 }
 
 variable "max_surge" {
