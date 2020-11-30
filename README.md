@@ -1,6 +1,6 @@
 Terraform module for a GKE Kubernetes Cluster in GCP
 
-# Version upgrade guide from v1.2.x to v1.3.x
+# Upgrade guide from v1.2.9 to v1.3.0
 
 1. While at `v1.2.9`, set `create_auxiliary_node_pool` to `True` - this will create a new additional node pool according to the values of `var.auxiliary_node_pool_config` before proceeding with the breaking change.
    * Run `terraform apply`
