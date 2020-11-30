@@ -123,6 +123,47 @@ resource "google_container_cluster" "k8s_cluster" {
   }
 }
 
+resource "google_container_node_pool" "node_pool" {
+  provider           = google-beta
+  name               = var.node_pool_name
+  location           = local.gke_location
+  version            = local.gke_node_version
+  cluster            = google_container_cluster.k8s_cluster.name
+  initial_node_count = var.node_count_initial_per_zone
+  node_count         = local.node_count_current_per_zone
+  autoscaling {
+    min_node_count = var.node_count_min_per_zone
+    max_node_count = var.node_count_max_per_zone
+  }
+  management {
+    auto_repair  = true
+    auto_upgrade = false
+  }
+  upgrade_settings {
+    max_surge       = var.max_surge
+    max_unavailable = var.max_unavailable
+  }
+  node_config {
+    machine_type = var.machine_type
+    disk_type    = var.disk_type
+    disk_size_gb = var.disk_size_gb
+    preemptible  = var.preemptible
+    labels = {
+      used_for = "gke"
+      used_by  = google_container_cluster.k8s_cluster.name
+    }
+    service_account = module.gke_service_account.email
+    oauth_scopes    = local.oauth_scopes
+    tags            = local.node_network_tags
+  }
+  depends_on = [google_project_service.container_api]
+  timeouts {
+    create = var.node_pool_timeout
+    update = var.node_pool_timeout
+    delete = var.node_pool_timeout
+  }
+}
+
 resource "google_container_node_pool" "node_pools" {
   for_each           = { for obj in var.node_pools : obj.node_pool_name => obj }
   provider           = google-beta
