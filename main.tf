@@ -170,10 +170,10 @@ resource "google_container_node_pool" "node_pools" {
 
 resource "kubernetes_namespace" "namespaces" {
   depends_on = [google_container_node_pool.node_pools]
-  count      = length(var.namespaces)
+  for_each   = { for obj in var.namespaces : obj.name => obj }
   metadata {
-    name   = var.namespaces[count.index].name
-    labels = var.namespaces[count.index].labels
+    name   = each.value.name
+    labels = each.value.labels
   }
   timeouts { delete = var.namespace_timeout }
 }
