@@ -189,8 +189,8 @@ resource "kubernetes_secret" "secrets" {
 }
 
 resource "google_compute_global_address" "static_ingress_ip" {
-  count      = length(var.ingress_ip_names)
-  name       = format("ingress-%s-%s", var.ingress_ip_names[count.index], var.name_suffix)
+  for_each   = toset(var.ingress_ip_names)
+  name       = format("ingress-%s-%s", each.value, var.name_suffix)
   depends_on = [google_project_service.networking_api, google_project_service.compute_api]
   timeouts {
     create = var.ip_address_timeout
