@@ -41,6 +41,8 @@ locals {
   # Otherwise, a RE-RUN of 'terraform apply' will be required for the changes
   # to first be applied on the k8s masters, and then for that change to be detected (and applied) on the k8s nodes.
   gke_node_version = var.gke_master_version
+
+  predefined_node_labels = { TF_used_for = "gke", TF_used_by  = google_container_cluster.k8s_cluster.name }
 }
 
 resource "random_string" "network_tag_substring" {
@@ -190,10 +192,7 @@ resource "google_container_node_pool" "node_pools" {
     disk_type    = each.value.disk_type
     disk_size_gb = each.value.disk_size_gb
     preemptible  = each.value.preemptible
-    labels = {
-      used_for = "gke"
-      used_by  = google_container_cluster.k8s_cluster.name
-    }
+    labels = merge(local.predefined_node_labels, each.value.node_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
     tags            = local.node_network_tags
