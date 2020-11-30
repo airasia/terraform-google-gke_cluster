@@ -1,5 +1,29 @@
 Terraform module for a GKE Kubernetes Cluster in GCP
 
+# Upgrade guide from v2.4.1 to v2.5.0
+
+1. Upgrade `gke_cluster` module version to `2.5.0`
+2. Run `terraform plan`
+   1. the plan will show that several resources will be destroyed and recreated under new named indexes
+   2. we want to avoid any kind of destruction and recreation
+3. Move the terraform states
+   1. notice that the plan says your static_ingress_ip resources will be destroyed (let's say `ingressIpX`) and new static_ingress_ip resources will be created (let's say `ingressIpY`)
+   2. notice that the plan says your kubernetes_namespace resources will be destroyed (let's say `namespaceX`) and new kubernetes_namespace resources will be created (let's say `namespaceY`)
+   3. P.S. if you happen to have multiple static_ingress_ip and kubernetes_namespace, then the plan will show these destructions and recreations multiple times - you will need to move the states for EACH of the respective resources one-by-one.
+   4. pay attention to the **array indexes**:
+      * the `*X` resources (the ones to be **destroyed**) start with array index `[0]` - although it may not show `[0]` in the plan
+      * the `*Y` resources (the ones to be **created**) will show array indexes with new named indexes
+   5. Use `terraform state mv` to manually move the states of each of `ingressIpX` to `ingressIpY` and to move the states of each of `namespaceX` to `namespaceY`
+      * refer to https://www.terraform.io/docs/commands/state/mv.html to learn more about how to move Terraform state positions
+      * once a resource is moved, it will say `Successfully moved 1 object(s).`
+      * repeat until all relevant states are moved to their desired positions
+4. Run `terraform plan` again
+   1. the plan should now show that no changes required
+   2. this confirms that you have successfully move all your resources' states to their new position as required by `v2.5.0`.
+5. DONE
+
+---
+
 # Upgrade guide from v2.2.1 to v2.3.0 to 2.4.0
 
 This upgrade process will:
