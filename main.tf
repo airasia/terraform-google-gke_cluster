@@ -184,8 +184,8 @@ resource "google_container_node_pool" "node_pools" {
     auto_upgrade = false
   }
   upgrade_settings {
-    max_surge       = var.max_surge
-    max_unavailable = var.max_unavailable
+    max_surge       = each.value.max_surge
+    max_unavailable = each.value.max_unavailable
   }
   node_config {
     machine_type = each.value.machine_type
