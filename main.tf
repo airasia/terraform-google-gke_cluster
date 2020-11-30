@@ -65,6 +65,11 @@ resource "google_project_service" "networking_api" {
   disable_on_destroy = false
 }
 
+resource "google_project_service" "compute_api" {
+  service            = "compute.googleapis.com"
+  disable_on_destroy = false
+}
+
 module "gke_service_account" {
   source       = "airasia/service_account/google"
   version      = "2.0.0"
@@ -186,7 +191,7 @@ resource "kubernetes_secret" "secrets" {
 resource "google_compute_global_address" "static_ingress_ip" {
   count      = length(var.ingress_ip_names)
   name       = format("ingress-%s-%s", var.ingress_ip_names[count.index], var.name_suffix)
-  depends_on = [google_project_service.networking_api]
+  depends_on = [google_project_service.networking_api, google_project_service.compute_api]
   timeouts {
     create = var.ip_address_timeout
     delete = var.ip_address_timeout
