@@ -164,48 +164,6 @@ resource "google_container_node_pool" "node_pool" {
   }
 }
 
-resource "google_container_node_pool" "auxiliary_node_pool" {
-  count              = var.create_auxiliary_node_pool ? 1 : 0
-  provider           = google-beta
-  name               = "aux-${var.node_pool_name}"
-  location           = local.gke_location
-  version            = local.gke_node_version
-  cluster            = google_container_cluster.k8s_cluster.name
-  initial_node_count = var.auxiliary_node_pool_config.node_count_initial_per_zone
-  node_count         = null
-  autoscaling {
-    min_node_count = var.auxiliary_node_pool_config.node_count_min_per_zone
-    max_node_count = var.auxiliary_node_pool_config.node_count_max_per_zone
-  }
-  management {
-    auto_repair  = true
-    auto_upgrade = false
-  }
-  upgrade_settings {
-    max_surge       = 1
-    max_unavailable = 0
-  }
-  node_config {
-    machine_type = var.auxiliary_node_pool_config.machine_type
-    disk_type    = "pd-standard"
-    disk_size_gb = var.auxiliary_node_pool_config.disk_size_gb
-    preemptible  = false
-    labels = {
-      used_for = "gke-aux-node-pool"
-      used_by  = google_container_cluster.k8s_cluster.name
-    }
-    service_account = module.gke_service_account.email
-    oauth_scopes    = ["cloud-platform"]
-    tags            = local.node_network_tags
-  }
-  depends_on = [google_project_service.container_api]
-  timeouts {
-    create = "30m"
-    update = "30m"
-    delete = "30m"
-  }
-}
-
 resource "kubernetes_namespace" "namespaces" {
   depends_on = [google_container_node_pool.node_pool]
   count      = length(var.namespaces)

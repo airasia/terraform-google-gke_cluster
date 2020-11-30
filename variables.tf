@@ -197,30 +197,6 @@ variable "max_unavailable" {
   default     = 0
 }
 
-variable "create_auxiliary_node_pool" {
-  description = "Will provision an additional node_pool as defined in \"var.auxiliary_node_pool_config\". This may cause a surge in your GKE pricing for the duration that this auxiliary node pool stays alive. This is meant for temporary use only when an IN-PLACE-UPDATE of the base node pool is not possible. Create auxiliary node pool. TF apply. Make changes to the base node pool. TF apply. Remove auxiliary node pool. TF apply."
-  type        = bool
-  default     = false
-}
-
-variable "auxiliary_node_pool_config" {
-  description = "Configurations of an additional node_pool that maybe created for maintenance purposes. Requires \"var.create_auxiliary_node_pool\" to be set to \"true\" for this to take effect."
-  type = object({
-    node_count_initial_per_zone = number
-    node_count_min_per_zone     = number
-    node_count_max_per_zone     = number
-    machine_type                = string
-    disk_size_gb                = number
-  })
-  default = {
-    node_count_initial_per_zone = 1
-    node_count_min_per_zone     = 1
-    node_count_max_per_zone     = 2
-    machine_type                = "e2-micro"
-    disk_size_gb                = 50
-  }
-}
-
 variable "cluster_logging_service" {
   description = "The logging service to be used by the GKE cluster."
   type        = string
