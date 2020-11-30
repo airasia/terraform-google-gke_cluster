@@ -41,12 +41,6 @@ variable "cluster_name" {
   default     = "k8s"
 }
 
-variable "node_pool_name" {
-  description = "An arbitrary name to identify the GKE node pool and its VMs & VM instance groups."
-  type        = string
-  default     = "gkenp"
-}
-
 variable "ingress_ip_names" {
   description = "Arbitrary names for list of static Ingress IPs to be created for the GKE cluster. Use empty list to avoid creating static Ingress IPs."
   type        = list(string)
@@ -137,54 +131,6 @@ variable "enable_addon_horizontal_pod_autoscaling" {
   default     = true
 }
 
-variable "machine_type" {
-  description = "The size of VM for each node. See https://cloud.google.com/compute/docs/machine-types."
-  type        = string
-  default     = "e2-micro"
-}
-
-variable "disk_type" {
-  description = "Type of the disk for each nodes. It can also be `pd-ssd`, which is more costly."
-  type        = string
-  default     = "pd-standard"
-}
-
-variable "disk_size_gb" {
-  description = "Size of the disk on each node in Giga Bytes."
-  type        = number
-  default     = 50
-}
-
-variable "preemptible" {
-  description = "Preemptible nodes last a maximum of 24 hours and provide no availability guarantees - like spot instances in AWS."
-  type        = bool
-  default     = false
-}
-
-variable "node_count_initial_per_zone" {
-  description = "The initial number of nodes (per zone) for the node pool to begin with. Should only be used during creation time as modifying it later will force a recreation of the existing node_pool - use \"var.node_count_current_per_zone\" instead to modify current size after creation if necessary."
-  type        = number
-  default     = 1
-}
-
-variable "node_count_min_per_zone" {
-  description = "The minimum number of nodes (per zone) this cluster will allocate if auto-down-scaling occurs."
-  type        = number
-  default     = 1
-}
-
-variable "node_count_max_per_zone" {
-  description = "The maximum number of nodes (per zone) this cluster will allocate if auto-up-scaling occurs."
-  type        = number
-  default     = 2
-}
-
-variable "node_count_current_per_zone" {
-  description = "Must use 0 or \"null\" when creating the cluster for the first time. Can later be used to modify the current number of nodes (per zone) as long as the value is between \"var.node_count_min_per_zone\" and \"var.node_count_max_per_zone\" (inclusive). (If you must set the number of nodes upon initial creation, then please use \"var.node_count_initial_per_zone\" instead which is an immutable value - see description of \"var.node_count_initial_per_zone\".) Do not modify this value WHILE modifying  \"var.node_count_min_per_zone\" or \"var.node_count_max_per_zone\" - run 2 separate 'terraform apply' commands to modify \"var.node_count_min_per_zone\"/\"var.node_count_max_per_zone\" in one command and \"var.node_count_current_per_zone\" in another command."
-  type        = number
-  default     = 0
-}
-
 variable "max_surge" {
   description = "Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to be upgraded simultaneously."
   type        = number
@@ -197,28 +143,36 @@ variable "max_unavailable" {
   default     = 0
 }
 
-variable "create_auxiliary_node_pool" {
-  description = "Will provision an additional node_pool as defined in \"var.auxiliary_node_pool_config\". This may cause a surge in your GKE pricing for the duration that this auxiliary node pool stays alive. This is meant for temporary use only when an IN-PLACE-UPDATE of the base node pool is not possible. Create auxiliary node pool. TF apply. Make changes to the base node pool. TF apply. Remove auxiliary node pool. TF apply."
-  type        = bool
-  default     = false
-}
-
-variable "auxiliary_node_pool_config" {
-  description = "Configurations of an additional node_pool that maybe created for maintenance purposes. Requires \"var.create_auxiliary_node_pool\" to be set to \"true\" for this to take effect."
-  type = object({
+variable "node_pools" {
+  description = "\"node_pool_name\". An arbitrary name to identify the GKE node pool and its VMs & VM instance groups.\n\n\"node_count_initial_per_zone\" - immutable. It is the initial number of nodes (per zone) for the node pool to begin with. Should only be used during creation time as it is immutable - modifying it later will force a recreation of the existing node_pool. Use \"node_count_current_per_zone\" instead to modify current size after creation (if necessary).\n\n\"node_count_current_per_zone\" - mutable. It must be \"null\" when creating the cluster for the first time. It is mutable - can be changed later to modify the current number of nodes (per zone) as long as the value is between \"node_count_min_per_zone\" and \"node_count_max_per_zone\" (inclusive). If you must set the number of nodes upon initial creation, then use \"node_count_initial_per_zone\" instead which is an immutable value. Do not modify the value of \"node_count_current_per_zone\" WHILE modifying  \"node_count_min_per_zone\" or \"node_count_max_per_zone\". Run 2 separate 'terraform apply' commands to modify \"node_count_min_per_zone\"/\"node_count_max_per_zone\" in one command and modify \"node_count_current_per_zone\" in another command.\n\n\"node_count_min_per_zone\". The minimum number of nodes (per zone) this nodepool will allocate if auto-down-scaling occurs.\n\n\"node_count_max_per_zone\". The maximum number of nodes (per zone) this nodepool will allocate if auto-up-scaling occurs.\n\n\"node_labels\". Kubernetes labels (key-value pairs) to be applied to each node. The kubernetes.io/ and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified. See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#labels.\n\n\"machine_type\". The size of VM for each node. See https://cloud.google.com/compute/docs/machine-types.\n\n\"disk_type\". Type of the disk for each node. It can also be `pd-ssd`, which is more costly.\n\n\"disk_size_gb\". Size of the disk on each node in Giga Bytes.\n\n\"preemptible\". Preemptible nodes last a maximum of 24 hours and helps reduce while providing no availability guarantee. It is like spot instances in AWS EC2.\n\n\"max_surge\". Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to be upgraded simultaneously.\n\n\"max_unavailable\". Max number of node(s) that can be allowed to be unavailable while the GKE cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to be upgraded simultaneously."
+  type = list(object({
+    node_pool_name              = string
     node_count_initial_per_zone = number
+    node_count_current_per_zone = number
     node_count_min_per_zone     = number
     node_count_max_per_zone     = number
+    node_labels                 = map(string)
     machine_type                = string
+    disk_type                   = string
     disk_size_gb                = number
-  })
-  default = {
+    preemptible                 = bool
+    max_surge                   = number
+    max_unavailable             = number
+  }))
+  default = [{
+    node_pool_name              = "gkenp-a"
     node_count_initial_per_zone = 1
+    node_count_current_per_zone = null
     node_count_min_per_zone     = 1
     node_count_max_per_zone     = 2
+    node_labels                 = {}
     machine_type                = "e2-micro"
+    disk_type                   = "pd-standard"
     disk_size_gb                = 50
-  }
+    preemptible                 = false
+    max_surge                   = 1
+    max_unavailable             = 0
+  }]
 }
 
 variable "cluster_logging_service" {
