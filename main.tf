@@ -206,7 +206,7 @@ resource "google_container_node_pool" "node_pools" {
 }
 
 resource "kubernetes_namespace" "namespaces" {
-  depends_on = [google_container_node_pool.node_pool]
+  depends_on = [google_container_node_pool.node_pools]
   count      = length(var.namespaces)
   metadata {
     name   = var.namespaces[count.index].name
@@ -251,7 +251,7 @@ resource "google_compute_firewall" "istioctl_firewall" {
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
   target_tags   = local.node_network_tags
-  depends_on    = [google_container_node_pool.node_pool, google_project_service.networking_api]
+  depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
     # see https://istio.io/latest/docs/setup/platform-setup/gke/
     protocol = "tcp"
