@@ -124,16 +124,17 @@ resource "google_container_cluster" "k8s_cluster" {
 }
 
 resource "google_container_node_pool" "node_pool" {
+  for_each           = { for obj in var.node_pools : obj.node_pool_name => obj }
   provider           = google-beta
-  name               = var.node_pool_name
+  name               = each.value.node_pool_name
   location           = local.gke_location
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
-  initial_node_count = var.node_count_initial_per_zone
-  node_count         = local.node_count_current_per_zone
+  initial_node_count = each.value.node_count_initial_per_zone
+  node_count         = each.value.node_count_current_per_zone
   autoscaling {
-    min_node_count = var.node_count_min_per_zone
-    max_node_count = var.node_count_max_per_zone
+    min_node_count = each.value.node_count_min_per_zone
+    max_node_count = each.value.node_count_max_per_zone
   }
   management {
     auto_repair  = true
@@ -144,10 +145,10 @@ resource "google_container_node_pool" "node_pool" {
     max_unavailable = var.max_unavailable
   }
   node_config {
-    machine_type = var.machine_type
-    disk_type    = var.disk_type
-    disk_size_gb = var.disk_size_gb
-    preemptible  = var.preemptible
+    machine_type = each.value.machine_type
+    disk_type    = each.value.disk_type
+    disk_size_gb = each.value.disk_size_gb
+    preemptible  = each.value.preemptible
     labels = {
       used_for = "gke"
       used_by  = google_container_cluster.k8s_cluster.name
