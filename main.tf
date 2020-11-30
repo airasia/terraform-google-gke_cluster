@@ -123,7 +123,7 @@ resource "google_container_cluster" "k8s_cluster" {
   }
 }
 
-resource "google_container_node_pool" "node_pool" {
+resource "google_container_node_pool" "node_pools" {
   for_each           = { for obj in var.node_pools : obj.node_pool_name => obj }
   provider           = google-beta
   name               = each.value.node_pool_name
