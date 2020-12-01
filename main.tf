@@ -11,12 +11,12 @@ provider "kubernetes" {
 }
 
 locals {
-  cluster_name                = format("%s-%s", var.cluster_name, var.name_suffix)
-  istio_ip_name               = format("%s-%s", var.istio_ip_name, var.name_suffix)
-  istioctl_firewall_name      = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
-  node_network_tags           = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
-  oauth_scopes                = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
-  master_private_ip_cidr      = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
+  cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
+  istio_ip_name          = format("%s-%s", var.istio_ip_name, var.name_suffix)
+  istioctl_firewall_name = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
+  node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
+  oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
+  master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
@@ -41,7 +41,7 @@ locals {
   # to first be applied on the k8s masters, and then for that change to be detected (and applied) on the k8s nodes.
   gke_node_version = var.gke_master_version
 
-  predefined_node_labels = { TF_used_for = "gke", TF_used_by  = google_container_cluster.k8s_cluster.name }
+  predefined_node_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
 }
 
 resource "random_string" "network_tag_substring" {
@@ -151,11 +151,11 @@ resource "google_container_node_pool" "node_pools" {
     max_unavailable = each.value.max_unavailable
   }
   node_config {
-    machine_type = each.value.machine_type
-    disk_type    = each.value.disk_type
-    disk_size_gb = each.value.disk_size_gb
-    preemptible  = each.value.preemptible
-    labels = merge(local.predefined_node_labels, each.value.node_labels)
+    machine_type    = each.value.machine_type
+    disk_type       = each.value.disk_type
+    disk_size_gb    = each.value.disk_size_gb
+    preemptible     = each.value.preemptible
+    labels          = merge(local.predefined_node_labels, each.value.node_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
     tags            = local.node_network_tags
