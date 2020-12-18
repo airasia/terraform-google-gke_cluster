@@ -170,7 +170,7 @@ resource "google_container_node_pool" "node_pools" {
 }
 
 resource "kubernetes_namespace" "namespaces" {
-  for_each   = { for obj in var.namespaces : obj.name => obj }
+  for_each = { for obj in var.namespaces : obj.name => obj }
   metadata {
     name   = each.value.name
     labels = each.value.labels
@@ -180,12 +180,12 @@ resource "kubernetes_namespace" "namespaces" {
 }
 
 resource "kubernetes_secret" "secrets" {
-  for_each   = var.secrets
+  for_each = var.secrets
   metadata {
     namespace = split(":", each.key)[0]
     name      = split(":", each.key)[1]
   }
-  data = each.value
+  data       = each.value
   depends_on = [kubernetes_namespace.namespaces]
 }
 
