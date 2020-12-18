@@ -207,7 +207,7 @@ resource "google_compute_global_address" "static_ingress_ip" {
 }
 
 resource "google_compute_address" "static_istio_ip" {
-  for_each   = var.create_istio_components ? toset(var.istio_ip_names) : []
+  for_each   = toset(var.istio_ip_names)
   name       = format("istio-%s-%s", each.value, var.name_suffix)
   depends_on = [google_project_service.networking_api]
   timeouts {
@@ -217,7 +217,7 @@ resource "google_compute_address" "static_istio_ip" {
 }
 
 resource "google_compute_firewall" "istioctl_firewall" {
-  count         = var.create_istio_components ? 1 : 0
+  count         = length(toset(var.istio_ip_names)) > 0 ? 1 : 0
   name          = local.istioctl_firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
