@@ -170,23 +170,23 @@ resource "google_container_node_pool" "node_pools" {
 }
 
 resource "kubernetes_namespace" "namespaces" {
-  depends_on = [google_container_node_pool.node_pools]
   for_each   = { for obj in var.namespaces : obj.name => obj }
   metadata {
     name   = each.value.name
     labels = each.value.labels
   }
   timeouts { delete = var.namespace_timeout }
+  depends_on = [google_container_node_pool.node_pools]
 }
 
 resource "kubernetes_secret" "secrets" {
-  depends_on = [kubernetes_namespace.namespaces]
   for_each   = var.secrets
   metadata {
     namespace = split(":", each.key)[0]
     name      = split(":", each.key)[1]
   }
   data = each.value
+  depends_on = [kubernetes_namespace.namespaces]
 }
 
 resource "google_compute_global_address" "static_ingress_ip" {
