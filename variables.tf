@@ -47,10 +47,10 @@ variable "ingress_ip_names" {
   default     = []
 }
 
-variable "istio_ip_name" {
-  description = "An arbitrary name to identify the Istio IP that will be generated for the k8s cluster if \"var.create_istio_components\" is set to \"true\"."
-  type        = string
-  default     = "istio-ip"
+variable "istio_ip_names" {
+  description = "Arbitrary names for list of static Istio IPs to be created for the GKE cluster. Requires \"var.create_istio_components\" to be set to \"true\". Use empty list to avoid creating static Istio IPs."
+  type        = list(string)
+  default     = []
 }
 
 variable "istioctl_firewall_name" {
