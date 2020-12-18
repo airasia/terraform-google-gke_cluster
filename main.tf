@@ -42,6 +42,14 @@ locals {
   gke_node_version = var.gke_master_version
 
   predefined_node_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
+
+  k8s_secrets = flatten([
+    for namespace_obj in var.namespaces : [
+      for secret_name, secret_data in namespace_obj.secrets : {
+        namespace_name = namespace_obj.name
+        secret_name    = secret_name
+        secret_data    = secret_data
+  }]])
 }
 
 resource "random_string" "network_tag_substring" {
@@ -180,12 +188,12 @@ resource "kubernetes_namespace" "namespaces" {
 }
 
 resource "kubernetes_secret" "secrets" {
-  for_each = var.secrets
+  for_each = { for obj in local.k8s_secrets : "${obj.namespace_name}:${obj.secret_name}" => obj }
   metadata {
-    namespace = split(":", each.key)[0]
-    name      = split(":", each.key)[1]
+    namespace = each.value.namespace_name
+    name      = each.value.secret_name
   }
-  data       = each.value
+  data       = each.value.secret_data
   depends_on = [kubernetes_namespace.namespaces]
 }
 
