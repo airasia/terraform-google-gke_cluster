@@ -105,18 +105,13 @@ variable "enable_public_endpoint" {
 }
 
 variable "namespaces" {
-  description = "A list of namespaces to be created in kubernetes."
+  description = "A list of namespaces to be created in kubernetes. A map of secrets can be included e.g. {\"mysql\": {\"username\": \"johndoe\", \"password\": \"password123\"}}"
   type = list(object({
-    name   = string
-    labels = map(string)
+    name    = string
+    labels  = map(string)
+    secrets = map(map(string))
   }))
   default = []
-}
-
-variable "secrets" {
-  description = "Set of secrets to be created in the different namespaces. Example- {\"namespacename:mysql\": {\"username\": \"johndoe\", \"password\": \"password123\"}}."
-  type        = map(map(string))
-  default     = {}
 }
 
 variable "enable_addon_http_load_balancing" {
