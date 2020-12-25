@@ -12,7 +12,6 @@ provider "kubernetes" {
 
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
-  istio_ip_name          = format("%s-%s", var.istio_ip_name, var.name_suffix)
   istioctl_firewall_name = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
   node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
@@ -208,8 +207,8 @@ resource "google_compute_global_address" "static_ingress_ip" {
 }
 
 resource "google_compute_address" "static_istio_ip" {
-  count      = var.create_istio_components ? 1 : 0
-  name       = local.istio_ip_name
+  for_each   = toset(var.istio_ip_names)
+  name       = format("istio-%s-%s", each.value, var.name_suffix)
   depends_on = [google_project_service.networking_api]
   timeouts {
     create = var.ip_address_timeout
@@ -218,7 +217,7 @@ resource "google_compute_address" "static_istio_ip" {
 }
 
 resource "google_compute_firewall" "istioctl_firewall" {
-  count         = var.create_istio_components ? 1 : 0
+  count         = length(toset(var.istio_ip_names)) > 0 ? 1 : 0
   name          = local.istioctl_firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]

@@ -47,14 +47,14 @@ variable "ingress_ip_names" {
   default     = []
 }
 
-variable "istio_ip_name" {
-  description = "An arbitrary name to identify the Istio IP that will be generated for the k8s cluster if \"var.create_istio_components\" is set to \"true\"."
-  type        = string
-  default     = "istio-ip"
+variable "istio_ip_names" {
+  description = "Arbitrary names for list of static Istio IPs to be created for the GKE cluster. Use empty list to avoid creating static Istio IPs."
+  type        = list(string)
+  default     = []
 }
 
 variable "istioctl_firewall_name" {
-  description = "An arbitrary name to identify the IstioCtl firewall that will be generated for the k8s cluster if \"var.create_istio_components\" is set to \"true\"."
+  description = "An arbitrary name to identify the IstioCtl firewall that will be generated for the GKE cluster if \"var.istio_ip_names\" contains any values."
   type        = string
   default     = "allow-istioctl"
 }
@@ -206,12 +206,6 @@ variable "sa_roles" {
   description = "The IAM roles that should be granted to the ServiceAccount which is attached to the GKE node VMs. This will enable the node VMs to access other GCP resources as permitted (or disallowed) by the IAM roles."
   type        = list(string)
   default     = []
-}
-
-variable "create_istio_components" {
-  description = "Whether to create GCP resources to use istio ingress. For example, \"istio_ip\", \"istioctl_firewall\" etc."
-  type        = bool
-  default     = false
 }
 
 variable "ip_address_timeout" {
