@@ -1,5 +1,41 @@
 Terraform module for a GKE Kubernetes Cluster in GCP
 
+# Upgrade guide from v2.6.0 to v2.7.0
+
+This upgrade performs 2 changes:
+  - Move the declaration of kubernetes secrets into the declaration of kubernets namesapces
+    - see the Pull Request description at https://github.com/airasia/terraform-google-gke_cluster/pull/7
+  - Ability to create multiple ingress IPs for istio
+    - read below
+
+Detailed steps provided below:
+
+1. Upgrade `gke_cluster` module version to `2.7.0`
+2. Run `terraform plan`
+   1. the plan may show that some `istio` resource(s) (if used any) will be destroyed
+   2. we want to avoid any kind of destruction and/or recreation
+   3. *P.S. to resolve any changes proposed for `kubernetes_secret` resource(s), please refer to [this Pull Request description](https://github.com/airasia/terraform-google-gke_cluster/pull/7) instead*
+3. Set the `istio_ip_names` variable with at least one item as `["ip"]`
+   1. this is so that the istio IP resource name is backward-compaitble
+4. Run `terraform plan` again
+   1. now, the plan may show that a `static_istio_ip` resource (if used any) will be destroyed and recreated under new named index
+   2. we want to avoid any kind of destruction and/or recreation
+   3. *P.S. to resolve any changes proposed for `kubernetes_secret` resource(s), please refer to [this Pull Request description](https://github.com/airasia/terraform-google-gke_cluster/pull/7) instead*
+4. Move the terraform states
+   1. notice that the plan says your **existing** static_istio_ip resource (let's say `istioIpX`) will be destroyed and **new** static_istio_ip resource (let's say `istioIpY`) will be created
+   2. pay attention to the **array indexes**:
+      * the `*X` resources (the ones to be **destroyed**) start with array index `[0]` - although it may not show `[0]` in the displayed plan
+      * the `*Y` resources (the ones to be **created**) will show array index with new named index
+   3. Use `terraform state mv` to manually move the state of `istioIpX` to `istioIpY`
+      * refer to https://www.terraform.io/docs/commands/state/mv.html to learn more about how to move Terraform state positions
+      * once a resource is moved, it will say `Successfully moved 1 object(s).`
+5. Run `terraform plan` again
+   1. the plan should now show that no changes required
+   2. this confirms that you have successfully moved all your resources' states to their new position as required by `v2.7.0`.
+6. DONE
+
+---
+
 # Upgrade guide from v2.4.1 to v2.5.0
 
 1. Upgrade `gke_cluster` module version to `2.5.0`
