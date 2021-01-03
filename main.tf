@@ -2,14 +2,6 @@ terraform {
   required_version = ">= 0.13.1" # see https://releases.hashicorp.com/terraform/
 }
 
-provider "kubernetes" {
-  version                = ">= 1.12.0" # see https://github.com/terraform-providers/terraform-provider-kubernetes/releases
-  load_config_file       = false
-  host                   = google_container_cluster.k8s_cluster.endpoint
-  token                  = data.google_client_config.google_client.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.k8s_cluster.master_auth.0.cluster_ca_certificate)
-}
-
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
   istioctl_firewall_name = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)

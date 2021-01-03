@@ -5,3 +5,11 @@ output "usage_IAM_roles" {
     "roles/storage.objectViewer",
   ]
 }
+
+output "cluster_endpoint" {
+  value = google_container_cluster.k8s_cluster.endpoint
+}
+
+output "cluster_ca_certificate" {
+  value = base64decode(google_container_cluster.k8s_cluster.master_auth.0.cluster_ca_certificate)
+}
