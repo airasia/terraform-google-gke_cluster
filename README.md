@@ -1,5 +1,29 @@
 Terraform module for a GKE Kubernetes Cluster in GCP
 
+# Fixing kubernetes "connection refused" error
+
+If you are using the `namespace` variable, you may get an error like the following:
+
+```
+Error: Get "http://localhost/api/v1/namespaces/<namespace_name>": dial tcp 127.0.0.1:80: connect: connection refused
+```
+
+In order to fix this, you need to declare a `kubernetes` provider in your terraform configuration like the following.
+
+```terraform
+provider "kubernetes" {
+  version                = "1.13.3" # see https://github.com/terraform-providers/terraform-provider-kubernetes/releases
+  load_config_file       = false
+  host                   = module.gke_cluster.cluster_endpoint
+  token                  = data.google_client_config.google_client.access_token
+  cluster_ca_certificate = module.gke_cluster.cluster_ca_certificate
+}
+
+data "google_client_config" "google_client" {}
+```
+
+Pay attention to the `gke_cluster` module output variables used here.
+
 # Upgrade guide from v2.6.0 to v2.7.0
 
 This upgrade performs 2 changes:
