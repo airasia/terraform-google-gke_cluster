@@ -35,13 +35,13 @@ This upgrade performs 2 changes:
 Detailed steps provided below:
 
 1. Upgrade `gke_cluster` module version to `2.7.0`
-2. Run `terraform plan`
+2. Run `terraform plan` - DO NOT APPLY this plan
    1. the plan may show that some `istio` resource(s) (if used any) will be destroyed
    2. we want to avoid any kind of destruction and/or recreation
    3. *P.S. to resolve any changes proposed for `kubernetes_secret` resource(s), please refer to [this Pull Request description](https://github.com/airasia/terraform-google-gke_cluster/pull/7) instead*
 3. Set the `istio_ip_names` variable with at least one item as `["ip"]`
    1. this is so that the istio IP resource name is backward-compaitble
-4. Run `terraform plan` again
+4. Run `terraform plan` - DO NOT APPLY this plan
    1. now, the plan may show that a `static_istio_ip` resource (if used any) will be destroyed and recreated under new named index
    2. we want to avoid any kind of destruction and/or recreation
    3. *P.S. to resolve any changes proposed for `kubernetes_secret` resource(s), please refer to [this Pull Request description](https://github.com/airasia/terraform-google-gke_cluster/pull/7) instead*
@@ -63,7 +63,7 @@ Detailed steps provided below:
 # Upgrade guide from v2.4.1 to v2.5.0
 
 1. Upgrade `gke_cluster` module version to `2.5.0`
-2. Run `terraform plan`
+2. Run `terraform plan` - DO NOT APPLY this plan
    1. the plan will show that several resources will be destroyed and recreated under new named indexes
    2. we want to avoid any kind of destruction and/or recreation
 3. Move the terraform states
