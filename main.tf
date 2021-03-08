@@ -218,7 +218,10 @@ resource "google_compute_firewall" "istioctl_firewall" {
   allow {
     # see https://istio.io/latest/docs/setup/platform-setup/gke/
     protocol = "tcp"
-    ports    = ["10250", "443", "15017"]
+    ports = [
+      "10250", "443", "15017", # see https://istio.io/latest/docs/setup/platform-setup/gke/
+      "8080", "15000",         # see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
+    ]
   }
 }
 
