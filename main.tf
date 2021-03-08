@@ -216,7 +216,6 @@ resource "google_compute_firewall" "istioctl_firewall" {
   target_tags   = local.node_network_tags
   depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
-    # see https://istio.io/latest/docs/setup/platform-setup/gke/
     protocol = "tcp"
     ports = [
       "10250", "443", "15017", # see https://istio.io/latest/docs/setup/platform-setup/gke/
