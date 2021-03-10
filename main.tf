@@ -4,7 +4,7 @@ terraform {
 
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
-  firewall_name = format("%s-%s", var.firewall_name, var.name_suffix)
+  cluster_firewall_name  = format("%s-%s", var.firewall_name, var.name_suffix)
   node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
@@ -216,7 +216,7 @@ resource "google_compute_address" "static_istio_ip" {
 
 resource "google_compute_firewall" "cluster_firewall" {
   count         = length(local.all_ingress_ports) > 0 ? 1 : 0
-  name          = local.firewall_name
+  name          = local.cluster_firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
   target_tags   = local.node_network_tags
