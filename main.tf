@@ -4,7 +4,6 @@ terraform {
 
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
-  istioctl_firewall_name = format("%s-%s", var.istioctl_firewall_name, var.name_suffix)
   node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
@@ -41,6 +40,13 @@ locals {
         secret_name    = secret_name
         secret_data    = secret_data
   }]])
+
+  firewall_name = format("%s-%s", var.firewall_name, var.name_suffix)
+  istio_ports = length(toset(var.istio_ip_names)) == 0 ? [] : [
+    "10250", "443", "15017", # see https://istio.io/latest/docs/setup/platform-setup/gke/
+    "8080", "15000",         # see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
+  ]
+  all_ingress_ports = toset(concat(var.additional_ingress_ports, local.istio_ports))
 }
 
 resource "random_string" "network_tag_substring" {
@@ -208,19 +214,16 @@ resource "google_compute_address" "static_istio_ip" {
   }
 }
 
-resource "google_compute_firewall" "istioctl_firewall" {
-  count         = length(toset(var.istio_ip_names)) > 0 ? 1 : 0
-  name          = local.istioctl_firewall_name
+resource "google_compute_firewall" "cluster_firewall" {
+  count         = length(local.all_ingress_ports) > 0 ? 1 : 0
+  name          = local.firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
   target_tags   = local.node_network_tags
   depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
     protocol = "tcp"
-    ports = [
-      "10250", "443", "15017", # see https://istio.io/latest/docs/setup/platform-setup/gke/
-      "8080", "15000",         # see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
-    ]
+    ports    = local.all_ingress_ports
   }
 }
 
