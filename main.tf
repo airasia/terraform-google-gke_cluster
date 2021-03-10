@@ -42,11 +42,11 @@ locals {
         secret_data    = secret_data
   }]])
 
-  istio_ports = length(toset(var.istio_ip_names)) == 0 ? [] : [
+  istio_ports = length(distinct(var.istio_ip_names)) == 0 ? [] : [
     "10250", "443", "15017", # for istio - see https://istio.io/latest/docs/setup/platform-setup/gke/
     "8080", "15000",         # for kiali - see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
   ]
-  all_ingress_ports = toset(concat(var.additional_ingress_ports, local.istio_ports))
+  all_ingress_ports = distinct(concat(var.additional_ingress_ports, local.istio_ports))
 }
 
 resource "random_string" "network_tag_substring" {
@@ -82,7 +82,7 @@ module "gke_service_account" {
   name         = var.sa_name
   display_name = var.sa_name
   description  = "Its IAM role(s) will specify the access-levels that the GKE node(s) may have"
-  roles        = toset(concat(local.pre_defined_sa_roles, var.sa_roles))
+  roles        = distinct(concat(local.pre_defined_sa_roles, var.sa_roles))
   depends_on   = [google_project_service.container_api]
 }
 
