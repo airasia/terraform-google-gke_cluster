@@ -46,7 +46,7 @@ locals {
     "10250", "443", "15017", # for istio - see https://istio.io/latest/docs/setup/platform-setup/gke/
     "8080", "15000",         # for kiali - see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
   ]
-  all_ingress_ports = distinct(concat(var.firewall_ingress_ports, local.istio_ports))
+  fireall_ingress_ports = distinct(concat(var.firewall_ingress_ports, local.istio_ports))
 }
 
 resource "random_string" "network_tag_substring" {
@@ -215,7 +215,7 @@ resource "google_compute_address" "static_istio_ip" {
 }
 
 resource "google_compute_firewall" "cluster_firewall" {
-  count         = length(local.all_ingress_ports) > 0 ? 1 : 0
+  count         = length(local.fireall_ingress_ports) > 0 ? 1 : 0
   name          = local.cluster_firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
@@ -223,7 +223,7 @@ resource "google_compute_firewall" "cluster_firewall" {
   depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
     protocol = "tcp"
-    ports    = local.all_ingress_ports
+    ports    = local.fireall_ingress_ports
   }
 }
 
