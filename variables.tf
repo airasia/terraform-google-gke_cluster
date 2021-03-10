@@ -60,7 +60,7 @@ variable "firewall_name" {
 }
 
 variable "firewall_ingress_ports" {
-  description = "Additional ports (on cluster nodes) that should be allowed incoming traffic."
+  description = "Additional ports (on cluster nodes) that should be allowed via firewall rules to receive incoming traffic."
   type        = list(string)
   default     = []
 }
