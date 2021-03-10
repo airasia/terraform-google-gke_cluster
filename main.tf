@@ -4,6 +4,7 @@ terraform {
 
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
+  firewall_name = format("%s-%s", var.firewall_name, var.name_suffix)
   node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
@@ -41,7 +42,6 @@ locals {
         secret_data    = secret_data
   }]])
 
-  firewall_name = format("%s-%s", var.firewall_name, var.name_suffix)
   istio_ports = length(toset(var.istio_ip_names)) == 0 ? [] : [
     "10250", "443", "15017", # see https://istio.io/latest/docs/setup/platform-setup/gke/
     "8080", "15000",         # see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
