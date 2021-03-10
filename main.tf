@@ -43,8 +43,8 @@ locals {
   }]])
 
   istio_ports = length(toset(var.istio_ip_names)) == 0 ? [] : [
-    "10250", "443", "15017", # see https://istio.io/latest/docs/setup/platform-setup/gke/
-    "8080", "15000",         # see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
+    "10250", "443", "15017", # for istio - see https://istio.io/latest/docs/setup/platform-setup/gke/
+    "8080", "15000",         # for kiali - see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
   ]
   all_ingress_ports = toset(concat(var.additional_ingress_ports, local.istio_ports))
 }
