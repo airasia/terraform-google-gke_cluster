@@ -214,6 +214,16 @@ resource "google_compute_address" "static_istio_ip" {
   }
 }
 
+resource "google_compute_address" "static_nginx_ip" {
+  for_each   = toset(var.nginx_ip_names)
+  name       = format("nginx-%s-%s", each.value, var.name_suffix)
+  depends_on = [google_project_service.networking_api]
+  timeouts {
+    create = var.ip_address_timeout
+    delete = var.ip_address_timeout
+  }
+}
+
 resource "google_compute_firewall" "cluster_firewall" {
   count         = length(local.fireall_ingress_ports) > 0 ? 1 : 0
   name          = local.cluster_firewall_name

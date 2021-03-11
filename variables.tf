@@ -53,6 +53,12 @@ variable "istio_ip_names" {
   default     = []
 }
 
+variable "nginx_ip_names" {
+  description = "Arbitrary names for list of static NGINX IPs to be created for the GKE cluster. Use empty list to avoid creating static NGINX IPs."
+  type        = list(string)
+  default     = []
+}
+
 variable "firewall_name" {
   description = "An arbitrary name to identify the firewall that will be generated for the GKE cluster if \"var.istio_ip_names\" or \"var.firewall_ingress_ports\" contains any values."
   type        = string
