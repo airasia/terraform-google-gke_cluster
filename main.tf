@@ -90,6 +90,7 @@ resource "google_container_cluster" "k8s_cluster" {
   # see https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
   name                     = local.cluster_name
   description              = var.cluster_description
+  resource_labels          = var.cluster_labels
   location                 = local.gke_location
   node_locations           = local.node_locations
   network                  = var.vpc_network
