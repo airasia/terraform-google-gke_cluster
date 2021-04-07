@@ -80,7 +80,7 @@ variable "sa_name" {
 variable "gke_master_version" {
   description = "GKE version of the cluster master to be used. See https://cloud.google.com/kubernetes-engine/docs/release-notes. "
   type        = string
-  default     = "1.16.13-gke.401"
+  default     = "1.17.17-gke.2800"
 }
 
 variable "cluster_description" {
