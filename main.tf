@@ -232,15 +232,15 @@ resource "google_compute_address" "static_nginx_ip" {
 }
 
 resource "helm_release" "nginx_controller" {
-  for_each         = { for obj in var.nginx_controllers : obj.name => obj }
-  name             = format("%s-%s", each.value.name, var.name_suffix)
-  namespace        = each.value.namespace
+  count            = var.nginx_controller.enabled ? 1 : 0
+  name             = "ingress-nginx"
+  namespace        = "ingress-nginx"
   create_namespace = true
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
   set_sensitive {
     name  = "controller.service.loadBalancerIP"
-    value = google_compute_address.static_nginx_ip[each.value.nginx_ip_name].address
+    value = google_compute_address.static_nginx_ip[var.nginx_controller.ip_name].address
   }
   depends_on = [google_container_cluster.k8s_cluster, google_compute_address.static_nginx_ip]
 }

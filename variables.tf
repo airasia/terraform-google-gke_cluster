@@ -234,13 +234,14 @@ variable "ip_address_timeout" {
   default     = "5m"
 }
 
-variable "nginx_controllers" {
-  description = "List to Nginx Controllers to be installed in the Cluster. \"name\" - An arbitrary name to identify the Nginx controller.\n\n \"namespace\" - Namespace in which this controller will resides. \"nginx_ip_name\" - The name of the nginx ip that is used to create in the nginx_ip_names section"
-  type = list(object({
-    name          = string
-    namespace     = string
-    nginx_ip_name = string
-
-  }))
-  default = []
-}
+variable "nginx_controller" {
+  description = "Whether to have nginx controller installed in this cluster setup; with a dedicated IP"
+  type = object({
+    enabled = bool
+    ip_name = string
+  })
+  default = {
+    enabled = false
+    ip_name = ""
+  }
+} 
