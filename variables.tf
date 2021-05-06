@@ -233,3 +233,14 @@ variable "ip_address_timeout" {
   type        = string
   default     = "5m"
 }
+
+variable "nginx_controllers" {
+  description = "List to Nginx Controllers to be installed in the Cluster. \"name\" - An arbitrary name to identify the Nginx controller.\n\n \"namespace\" - Namespace in which this controller will resides. \"nginx_ip_name\" - The name of the nginx ip that is used to create in the nginx_ip_names section"
+  type = list(object({
+    name          = string
+    namespace     = string
+    nginx_ip_name = string
+
+  }))
+  default = []
+}

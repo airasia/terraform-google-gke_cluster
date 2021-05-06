@@ -231,6 +231,20 @@ resource "google_compute_address" "static_nginx_ip" {
   }
 }
 
+resource "helm_release" "nginx_controller" {
+  for_each         = { for obj in var.nginx_controllers : obj.name => obj }
+  name             = format("%s-%s", each.value.name, var.name_suffix)
+  namespace        = each.value.namespace
+  create_namespace = true
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  set_sensitive {
+    name  = "controller.service.loadBalancerIP"
+    value = google_compute_address.static_nginx_ip[each.value.nginx_ip_name].address
+  }
+  depends_on = [google_container_cluster.k8s_cluster, google_compute_address.static_nginx_ip]
+}
+
 resource "google_compute_firewall" "cluster_firewall" {
   count         = length(local.fireall_ingress_ports) > 0 ? 1 : 0
   name          = local.cluster_firewall_name
