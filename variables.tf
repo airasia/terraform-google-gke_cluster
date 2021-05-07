@@ -193,7 +193,7 @@ variable "node_pools" {
 }
 
 variable "cluster_logging_service" {
-  description = "The logging service to be used by the GKE cluster."
+  description = "The logging service that the cluster should write logs to. Available options include \"logging.googleapis.com\" (Legacy Stackdriver), \"logging.googleapis.com/kubernetes\" (Stackdriver Kubernetes Engine Logging), and \"none\"."
   type        = string
   default     = "logging.googleapis.com/kubernetes"
 }
