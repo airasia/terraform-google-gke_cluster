@@ -1,6 +1,7 @@
 Terraform module for a GKE Kubernetes Cluster in GCP
 
 # Using Helm Charts to install Ingress Nginx
+
 If you want to utilize this feature make sure to declare a `helm` provider in your terraform configuration as follows.
 
 ```terraform
@@ -13,6 +14,7 @@ provider "helm" {
   }
 }
 ```
+
 Pay attention to the `gke_cluster` module output variables used here.
 # Fixing kubernetes "connection refused" error
 
