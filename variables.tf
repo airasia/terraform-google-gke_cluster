@@ -242,6 +242,6 @@ variable "nginx_controller" {
   })
   default = {
     enabled = false
-    ip_name = ""
+    ip_name = null
   }
 } 
