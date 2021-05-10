@@ -234,8 +234,8 @@ resource "google_compute_address" "static_nginx_ip" {
 resource "helm_release" "nginx_controller" {
    # see https://kubernetes.github.io/ingress-nginx/deploy/#using-helm
   count            = var.nginx_controller.enabled ? 1 : 0
-  name             = "ingress-nginx"
-  namespace        = "ingress-nginx"
+  name             = "nginx-ingress"
+  namespace        = "nginx-ingress"
   create_namespace = true
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
