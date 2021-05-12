@@ -157,7 +157,20 @@ variable "max_unavailable" {
 }
 
 variable "maintenance_window" {
-  description = "The time windows when GKE can be allowed to perform maintenance ops like version upgrade, repair, scheduled maintenance etc. GKE requires the total sum of allowed hours to be at least 48 hours per 32 days - with no single window duration being shorter than 4 hours.\n\nThe \"_time_utc\" values are allowed in 24-hour \"HH:MM\" format only and must be in UTC timezone. The \"days_of_week\" value is a CSV string containing 2-letter notations of days in a week in capital letters. Check the default values for reference. Note that, the timezone conversions from UTC do not impact the day values.\n\nKNOWN ISSUE: If the \"start_time_utc\" is as late in the day as pushing \"end_time_utc\" over to the next day in UTC, then \"end_time_utc\" will become smaller than \"start_time_utc\" - this is disallowed by Terraform. Therefore, both \"start_time_utc\" and \"end_time_utc\" must be within the same single day in UTC."
+  description = <<EOT
+  The time windows when GKE can be allowed to perform maintenance ops like version upgrade, 
+  repair, scheduled maintenance etc. GKE requires the total sum of allowed hours to be at least 48 hours per 
+  32 days - with no single duration being shorter than 4 hours.
+  
+  The `_time_utc` values are allowed in 24-hour `HH:MM` format only and must be in UTC timezone.
+  The `days_of_week` value is a CSV string containing 2-letter notations of days in a week in capital letters.
+  Check the default values for reference. Note that, the timezone conversions from UTC do not impact the day values.
+  
+  KNOWN ISSUE: 
+  If the `start_time_utc` is as late in the day as pushing `end_time_utc` over to the NEXT day in UTC, 
+  then `end_time_utc` will become smaller than `start_time_utc` - this is disallowed by Terraform. 
+  Therefore, both `start_time_utc` and `end_time_utc` must be within the same single day in UTC.
+  EOT
   type = object({
     start_time_utc = string
     end_time_utc   = string
