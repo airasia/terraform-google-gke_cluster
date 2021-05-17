@@ -231,7 +231,8 @@ resource "google_compute_address" "static_nginx_ip" {
   }
 }
 
-resource "helm_release" "nginx_controller" {
+resource "helm_release" "nginx_ingress_controller" {
+  # see https://kubernetes.github.io/ingress-nginx/deploy/#using-helm
   # see https://kubernetes.github.io/ingress-nginx/deploy/#using-helm
   count            = var.nginx_controller.enabled ? 1 : 0
   name             = "nginx-ingress"
