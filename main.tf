@@ -231,6 +231,21 @@ resource "google_compute_address" "static_nginx_ip" {
   }
 }
 
+resource "helm_release" "nginx_ingress_controller" {
+  # see https://kubernetes.github.io/ingress-nginx/deploy/#using-helm
+  count            = var.nginx_controller.enabled ? 1 : 0
+  name             = "nginx-ingress"
+  namespace        = "nginx-ingress"
+  create_namespace = true
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  set_sensitive {
+    name  = "controller.service.loadBalancerIP"
+    value = google_compute_address.static_nginx_ip[var.nginx_controller.ip_name].address
+  }
+  depends_on = [google_container_cluster.k8s_cluster, google_compute_address.static_nginx_ip]
+}
+
 resource "google_compute_firewall" "cluster_firewall" {
   count         = length(local.fireall_ingress_ports) > 0 ? 1 : 0
   name          = local.cluster_firewall_name

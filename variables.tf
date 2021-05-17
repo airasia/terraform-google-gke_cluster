@@ -233,3 +233,15 @@ variable "ip_address_timeout" {
   type        = string
   default     = "5m"
 }
+
+variable "nginx_controller" {
+  description = "Whether to have a NGINX Ingress Controller installed in this cluster; with a dedicated IP. Refer to the IP name in var.nginx_ip_names to be used here."
+  type = object({
+    enabled = bool
+    ip_name = string
+  })
+  default = {
+    enabled = false
+    ip_name = null
+  }
+} 
