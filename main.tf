@@ -127,6 +127,14 @@ resource "google_container_cluster" "k8s_cluster" {
       disabled = ! var.enable_addon_horizontal_pod_autoscaling
     }
   }
+  maintenance_policy {
+    # see https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#recurring_window
+    recurring_window {
+      start_time = "2021-01-01T${var.maintenance_window.start_time_utc}:00Z"  # disregard the dates
+      end_time   = "2021-01-01T${var.maintenance_window.end_time_utc}:00Z"    # disregard the dates
+      recurrence = "FREQ=WEEKLY;BYDAY=${var.maintenance_window.days_of_week}" # remains unchanged by timezone conversion
+    }
+  }
   depends_on = [google_project_service.container_api]
   timeouts {
     create = var.cluster_timeout

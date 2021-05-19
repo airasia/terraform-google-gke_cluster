@@ -156,6 +156,33 @@ variable "max_unavailable" {
   default     = 0
 }
 
+variable "maintenance_window" {
+  description = <<EOT
+  The time windows when GKE can be allowed to perform maintenance ops like version upgrade, 
+  repair, scheduled maintenance etc. GKE requires the total sum of allowed hours to be at least 48 hours per 
+  32 days - with no single duration being shorter than 4 hours.
+  
+  The `_time_utc` values are allowed in 24-hour `HH:MM` format only and must be in UTC timezone.
+  The `days_of_week` value is a CSV string containing 2-letter notations of days in a week in capital letters.
+  Check the default values for reference. Note that, the timezone conversions from UTC do not impact the day values.
+  
+  KNOWN ISSUE: 
+  If the `start_time_utc` is as late in the day as pushing `end_time_utc` over to the NEXT day in UTC, 
+  then `end_time_utc` will become smaller than `start_time_utc` - this is disallowed by Terraform. 
+  Therefore, both `start_time_utc` and `end_time_utc` must be within the same single day in UTC.
+  EOT
+  type = object({
+    start_time_utc = string
+    end_time_utc   = string
+    days_of_week   = string
+  })
+  default = {
+    start_time_utc = "19:00"          # implies 3AM in MYT
+    end_time_utc   = "23:00"          # implies 7AM in MYT
+    days_of_week   = "MO,TU,WE,TH,FR" # implies MO,TU,WE,TH,FR in MYT - remains unchanged by timezone conversion
+  }
+}
+
 variable "node_pools" {
   description = "\"node_pool_name\". An arbitrary name to identify the GKE node pool and its VMs & VM instance groups.\n\n\"node_count_initial_per_zone\" - immutable. It is the initial number of nodes (per zone) for the node pool to begin with. Should only be used during creation time as it is immutable - modifying it later will force a recreation of the existing node_pool. Use \"node_count_current_per_zone\" instead to modify current size after creation (if necessary).\n\n\"node_count_current_per_zone\" - mutable. It must be \"null\" when creating the cluster for the first time. It is mutable - can be changed later to modify the current number of nodes (per zone) as long as the value is between \"node_count_min_per_zone\" and \"node_count_max_per_zone\" (inclusive). If you must set the number of nodes upon initial creation, then use \"node_count_initial_per_zone\" instead which is an immutable value. Do not modify the value of \"node_count_current_per_zone\" WHILE modifying  \"node_count_min_per_zone\" or \"node_count_max_per_zone\". Run 2 separate 'terraform apply' commands to modify \"node_count_min_per_zone\"/\"node_count_max_per_zone\" in one command and modify \"node_count_current_per_zone\" in another command.\n\n\"node_count_min_per_zone\". The minimum number of nodes (per zone) this nodepool will allocate if auto-down-scaling occurs.\n\n\"node_count_max_per_zone\". The maximum number of nodes (per zone) this nodepool will allocate if auto-up-scaling occurs.\n\n\"node_labels\". Kubernetes labels (key-value pairs) to be applied to each node. The kubernetes.io/ and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified. See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#labels.\n\n\"max_pods_per_node\". The maximum number of pods per node in this node pool. This value has direct correlation with the IP range sizes availble in \"var.pods_ip_range_name\". See https://cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr.\n\n\"machine_type\". The size of VM for each node. See https://cloud.google.com/compute/docs/machine-types.\n\n\"disk_type\". Type of the disk for each node. It can also be `pd-ssd`, which is more costly.\n\n\"disk_size_gb\". Size of the disk on each node in Giga Bytes.\n\n\"preemptible\". Preemptible nodes last a maximum of 24 hours and helps reduce while providing no availability guarantee. It is like spot instances in AWS EC2.\n\n\"max_surge\". Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to be upgraded simultaneously.\n\n\"max_unavailable\". Max number of node(s) that can be allowed to be unavailable while the GKE cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to be upgraded simultaneously.\n\n\"enable_shielded_nodes\". Whether to enable/disable the Secure Boot & Integrity Monitoring features of the nodes. By default (when set to null), Integrity Monitoring is set to 'true' and Secure Boot is set to 'false'."
   type = list(object({
