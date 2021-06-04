@@ -182,6 +182,11 @@ resource "google_container_node_pool" "node_pools" {
       enable_integrity_monitoring = coalesce(each.value.enable_node_integrity, true)
     }
   }
+  lifecycle {
+    ignore_changes = [
+      initial_node_count # changes to this field triggers destruction/recreation. See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#initial_node_count
+    ]
+  }
   depends_on = [google_project_service.container_api]
   timeouts {
     create = var.node_pool_timeout
