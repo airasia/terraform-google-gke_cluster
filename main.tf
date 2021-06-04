@@ -177,8 +177,8 @@ resource "google_container_node_pool" "node_pools" {
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
       # see https://registry.terraform.io/providers/hashicorp/google/3.65.0/docs/resources/container_cluster
-      enable_secure_boot          = coalesce(each.value.enable_shielded_nodes, false)
-      enable_integrity_monitoring = coalesce(each.value.enable_shielded_nodes, true)
+      enable_secure_boot          = coalesce(each.value.enable_node_integrity, false)
+      enable_integrity_monitoring = coalesce(each.value.enable_node_integrity, true)
     }
   }
   depends_on = [google_project_service.container_api]
