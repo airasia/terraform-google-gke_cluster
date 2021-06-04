@@ -152,7 +152,6 @@ resource "google_container_node_pool" "node_pools" {
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = each.value.node_count_initial_per_zone
-  node_count         = each.value.node_count_current_per_zone
   max_pods_per_node  = each.value.max_pods_per_node
   autoscaling {
     min_node_count = each.value.node_count_min_per_zone

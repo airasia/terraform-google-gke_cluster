@@ -195,17 +195,7 @@ variable "node_pools" {
   
   node_count_initial_per_zone: Immutable. It is the initial number of nodes (per zone) for the node
   pool to begin with. Should only be used during creation time as it is immutable - modifying it
-  later will force a recreation of the existing node_pool. Use "node_count_current_per_zone" instead
-  to modify current size after creation (if necessary).
-  
-  node_count_current_per_zone: Mutable. It must be "null" when creating the cluster for the first
-  time. It is mutable - can be changed later to modify the current number of nodes (per zone) as
-  long as the value is between "node_count_min_per_zone" and "node_count_max_per_zone" (inclusive).
-  If you must set the number of nodes upon initial creation, then use "node_count_initial_per_zone"
-  instead which is an immutable value. Do not modify the value of "node_count_current_per_zone"
-  WHILE modifying  "node_count_min_per_zone" or "node_count_max_per_zone". Run 2 separate
-  'terraformapply' commands to modify "node_count_min_per_zone"/"node_count_max_per_zone" in one
-  command and modify "node_count_current_per_zone" in another command.
+  later will force a recreation of the existing node_pool.
   
   node_count_min_per_zone: The minimum number of nodes (per zone) this nodepool will allocate if
   auto-down-scaling occurs.
@@ -253,7 +243,6 @@ variable "node_pools" {
   type = list(object({
     node_pool_name              = string
     node_count_initial_per_zone = number
-    node_count_current_per_zone = number
     node_count_min_per_zone     = number
     node_count_max_per_zone     = number
     node_labels                 = map(string)
@@ -270,7 +259,6 @@ variable "node_pools" {
   default = [{
     node_pool_name              = "gkenp-a"
     node_count_initial_per_zone = 1
-    node_count_current_per_zone = null
     node_count_min_per_zone     = 1
     node_count_max_per_zone     = 2
     node_labels                 = {}
