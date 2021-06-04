@@ -157,7 +157,7 @@ variable "max_unavailable" {
 }
 
 variable "maintenance_window" {
-  description = <<EOT
+  description = <<-EOT
   The time windows when GKE can be allowed to perform maintenance ops like version upgrade, 
   repair, scheduled maintenance etc. GKE requires the total sum of allowed hours to be at least 48 hours per 
   32 days - with no single duration being shorter than 4 hours.
@@ -271,4 +271,4 @@ variable "nginx_controller" {
     enabled = false
     ip_name = null
   }
-} 
+}
