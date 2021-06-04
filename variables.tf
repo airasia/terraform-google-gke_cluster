@@ -116,6 +116,12 @@ variable "master_authorized_networks" {
   default = []
 }
 
+variable "enable_shielded_nodes" {
+  description = "Enable Shielded Nodes feature on all nodes in the cluster. Toggling this value will drain, delete, and recreate all nodes in all node pools of this cluster. This may take a lot of time, depending on cluster size, usage and maintenance windows."
+  type        = bool
+  default     = false
+}
+
 variable "enable_public_endpoint" {
   description = "Allows access through the public endpoint of cluster master. Keep it 'true' if you have 'master_authorized_networks_config.cidr_blocks' in the k8s cluster."
   type        = bool

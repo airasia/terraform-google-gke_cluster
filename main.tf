@@ -98,6 +98,7 @@ resource "google_container_cluster" "k8s_cluster" {
   min_master_version       = var.gke_master_version
   logging_service          = var.cluster_logging_service
   monitoring_service       = var.cluster_monitoring_service
+  enable_shielded_nodes    = var.enable_shielded_nodes
   initial_node_count       = 1    # create just 1 node in the default_node_pool before removing it - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#initial_node_count
   remove_default_node_pool = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
   private_cluster_config {
