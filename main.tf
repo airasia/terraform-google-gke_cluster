@@ -250,7 +250,7 @@ resource "helm_release" "nginx_ingress_controller" {
   version          = "3.31.0"
   values = [
     # values.yaml file contents copied from official repo at https://github.com/kubernetes/ingress-nginx/releases/tag/helm-chart-3.31.0
-    "${file("${path.module}/helm/nginx-ingress-values.yaml")}"
+    file("${path.module}/helm/nginx-ingress-values.yaml")
   ]
   set_sensitive {
     name  = "controller.service.loadBalancerIP"
