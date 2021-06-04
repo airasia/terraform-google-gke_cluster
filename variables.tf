@@ -187,9 +187,9 @@ variable "node_pools" {
   description = <<-EOT
   node_pool_name: An arbitrary name to identify the GKE node pool and its VMs & VM instance groups.
   
-  node_count_initial_per_zone: Immutable. It is the initial number of nodes (per zone) for the node
-  pool to begin with. Should only be used during creation time as it is immutable - modifying it
-  later will force a recreation of the existing node_pool.
+  node_count_initial_per_zone: It is the initial number of nodes (per zone) for the node
+  pool to begin with. Should only be used during creation time as it is immutable. Subsequent
+  changes made to this value will be ignored.
   
   node_count_min_per_zone: The minimum number of nodes (per zone) this nodepool will allocate if
   auto-down-scaling occurs.
