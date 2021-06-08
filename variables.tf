@@ -116,6 +116,12 @@ variable "master_authorized_networks" {
   default = []
 }
 
+variable "enable_shielded_nodes" {
+  description = "Enable Shielded Nodes feature on all nodes in the cluster. Toggling this value will drain, delete, and recreate all nodes in all node pools of this cluster. This may take a lot of time, depending on cluster size, usage and maintenance windows."
+  type        = bool
+  default     = false
+}
+
 variable "enable_public_endpoint" {
   description = "Allows access through the public endpoint of cluster master. Keep it 'true' if you have 'master_authorized_networks_config.cidr_blocks' in the k8s cluster."
   type        = bool
@@ -234,9 +240,10 @@ variable "node_pools" {
   cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to
   be upgraded simultaneously.
   
-  enable_shielded_nodes: Whether to enable/disable the Secure Boot & Integrity Monitoring features
-  of the nodes. By default (when set to null), Integrity Monitoring is set to 'true' and Secure Boot
-  is set to 'false'.
+  enable_node_integrity: Whether to enable/disable the Secure Boot & Integrity Monitoring features
+  of the nodes. These features are used alongside GKE Shielded Nodes feature. By default
+  (when set to null), Integrity Monitoring is set to 'true' and Secure Boot is set to 'false'.
+  See https://cloud.google.com/kubernetes-engine/docs/how-to/shielded-gke-nodes#node_integrity
   EOT
   type = list(object({
     node_pool_name              = string
@@ -252,7 +259,7 @@ variable "node_pools" {
     preemptible                 = bool
     max_surge                   = number
     max_unavailable             = number
-    enable_shielded_nodes       = bool
+    enable_node_integrity       = bool
   }))
   default = [{
     node_pool_name              = "gkenp-a"
@@ -268,7 +275,7 @@ variable "node_pools" {
     preemptible                 = false
     max_surge                   = 1
     max_unavailable             = 0
-    enable_shielded_nodes       = null
+    enable_node_integrity       = null
   }]
 }
 
