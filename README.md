@@ -16,6 +16,7 @@ provider "helm" {
 ```
 
 Pay attention to the `gke_cluster` module output variables used here.
+
 # Fixing kubernetes "connection refused" error
 
 If you are using the `namespace` variable, you may get an error like the following:
@@ -40,7 +41,7 @@ data "google_client_config" "google_client" {}
 
 Pay attention to the `gke_cluster` module output variables used here.
 
-# Upgrade guide from v2.6.0 to v2.7.0
+# Upgrade guide from v2.6.1 to v2.7.1
 
 This upgrade performs 2 changes:
   - Move the declaration of kubernetes secrets into the declaration of kubernets namesapces
@@ -50,7 +51,7 @@ This upgrade performs 2 changes:
 
 Detailed steps provided below:
 
-1. Upgrade `gke_cluster` module version to `2.7.0`
+1. Upgrade `gke_cluster` module version to `2.7.1`
 2. Run `terraform plan` - DO NOT APPLY this plan
    1. the plan may show that some `istio` resource(s) (if used any) will be destroyed
    2. we want to avoid any kind of destruction and/or recreation
@@ -71,14 +72,14 @@ Detailed steps provided below:
       * once a resource is moved, it will say `Successfully moved 1 object(s).`
 5. Run `terraform plan` again
    1. the plan should now show that no changes required
-   2. this confirms that you have successfully moved all your resources' states to their new position as required by `v2.7.0`.
+   2. this confirms that you have successfully moved all your resources' states to their new position as required by `v2.7.1`.
 6. DONE
 
 ---
 
-# Upgrade guide from v2.4.1 to v2.5.0
+# Upgrade guide from v2.4.2 to v2.5.1
 
-1. Upgrade `gke_cluster` module version to `2.5.0`
+1. Upgrade `gke_cluster` module version to `2.5.1`
 2. Run `terraform plan` - DO NOT APPLY this plan
    1. the plan will show that several resources will be destroyed and recreated under new named indexes
    2. we want to avoid any kind of destruction and/or recreation
@@ -95,12 +96,12 @@ Detailed steps provided below:
       * repeat until all relevant states are moved to their desired positions
 4. Run `terraform plan` again
    1. the plan should now show that no changes required
-   2. this confirms that you have successfully moved all your resources' states to their new position as required by `v2.5.0`.
+   2. this confirms that you have successfully moved all your resources' states to their new position as required by `v2.5.1`.
 5. DONE
 
 ---
 
-# Upgrade guide from v2.2.1 to v2.3.0 to 2.4.0
+# Upgrade guide from v2.2.2 to v2.3.1 to 2.4.2
 
 This upgrade process will:
   - drop the use of auxiliary node pools (if any)
@@ -110,10 +111,10 @@ This upgrade process will:
 
 Detailed steps provided below:
 
-1. While on `v2.2.1`, remove the variables `create_auxiliary_node_pool` and `auxiliary_node_pool_config`.
+1. While on `v2.2.2`, remove the variables `create_auxiliary_node_pool` and `auxiliary_node_pool_config`.
    1. run `terraform plan` & `terraform apply`
    2. this will remove any `auxiliary_node_pool` that may have been there
-2. Upgrade **gke_cluster** module to `v2.3.0` and set variable `node_pools` with its required params.
+2. Upgrade **gke_cluster** module to `v2.3.1` and set variable `node_pools` with its required params.
    1. value of `node_pool_name` for the new node pool must be different from the name of the old node pool
    2. run `terraform plan` & `terraform apply`
    3. this will create a new node pool as per the specs provided in `node_pools`.
@@ -148,7 +149,7 @@ Detailed steps provided below:
       2. confirm that the response says `evicting pod` or `evicted` for all remaining pods in the old node pool
       3. this step may take some time
    6. Migration complete
-4. Upgrade **gke_cluster** module to `v2.4.0` and remove use of any obsolete variables.
+4. Upgrade **gke_cluster** module to `v2.4.2` and remove use of any obsolete variables.
    1. remove standalone variables such as `machine_type`, `disk_size_gb`, `node_count_initial_per_zone`, `node_count_min_per_zone`, `node_count_max_per_zone`, `node_count_current_per_zone` from the module which are no longer used for standalone node pool.
    2. run `terraform plan` & `terraform apply`
    3. this will remove the old node pool completely
