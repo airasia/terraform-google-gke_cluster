@@ -237,34 +237,34 @@ variable "node_pools" {
   See https://cloud.google.com/kubernetes-engine/docs/how-to/shielded-gke-nodes#node_integrity
   EOT
   type = list(object({
-    node_pool_name              = string
-    node_count_min_per_zone     = number
-    node_count_max_per_zone     = number
-    node_labels                 = map(string)
-    node_taints                 = list(object({ key = string, value = string, effect = string }))
-    max_pods_per_node           = number
-    machine_type                = string
-    disk_type                   = string
-    disk_size_gb                = number
-    preemptible                 = bool
-    max_surge                   = number
-    max_unavailable             = number
-    enable_node_integrity       = bool
+    node_pool_name          = string
+    node_count_min_per_zone = number
+    node_count_max_per_zone = number
+    node_labels             = map(string)
+    node_taints             = list(object({ key = string, value = string, effect = string }))
+    max_pods_per_node       = number
+    machine_type            = string
+    disk_type               = string
+    disk_size_gb            = number
+    preemptible             = bool
+    max_surge               = number
+    max_unavailable         = number
+    enable_node_integrity   = bool
   }))
   default = [{
-    node_pool_name              = "gkenp-a"
-    node_count_min_per_zone     = 1
-    node_count_max_per_zone     = 2
-    node_labels                 = {}
+    node_pool_name          = "gkenp-a"
+    node_count_min_per_zone = 1
+    node_count_max_per_zone = 2
+    node_labels             = {}
     node_taints                 = []
-    max_pods_per_node           = 32
-    machine_type                = "e2-micro"
-    disk_type                   = "pd-standard"
-    disk_size_gb                = 50
-    preemptible                 = false
-    max_surge                   = 1
-    max_unavailable             = 0
-    enable_node_integrity       = null
+    max_pods_per_node       = 32
+    machine_type            = "e2-micro"
+    disk_type               = "pd-standard"
+    disk_size_gb            = 50
+    preemptible             = false
+    max_surge               = 1
+    max_unavailable         = 0
+    enable_node_integrity   = null
   }]
 }
 
