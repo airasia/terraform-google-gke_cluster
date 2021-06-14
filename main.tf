@@ -7,7 +7,7 @@ locals {
   cluster_firewall_name  = format("%s-%s", var.firewall_name, var.name_suffix)
   node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
-  master_private_ip_cidr = "172.16.0.0/28"   # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
+  master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
   pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
