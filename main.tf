@@ -175,6 +175,7 @@ resource "google_container_node_pool" "node_pools" {
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
     tags            = local.node_network_tags
+    taint           = each.value.node_taints
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
       # see https://registry.terraform.io/providers/hashicorp/google/3.65.0/docs/resources/container_cluster

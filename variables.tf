@@ -216,6 +216,10 @@ variable "node_pools" {
   node_labels: Kubernetes labels (key-value pairs) to be applied to each node. The kubernetes.io/
   and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified.
   See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#labels.
+
+  node_taints: Kubernetes taint to be applied to each node of the nodepool. Supported values for
+  `effect` are `NO_SCHEDULE`, `PREFER_NO_SCHEDULE` or `NO_EXECUTE`.
+  See https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
   
   max_pods_per_node: The maximum number of pods per node in this node pool. This value has direct
   correlation with the IP range sizes availble in "var.pods_ip_range_name".
@@ -252,6 +256,7 @@ variable "node_pools" {
     node_count_min_per_zone     = number
     node_count_max_per_zone     = number
     node_labels                 = map(string)
+    node_taints                 = list(object({ key = string, value = string, effect = string }))
     max_pods_per_node           = number
     machine_type                = string
     disk_type                   = string
@@ -268,6 +273,7 @@ variable "node_pools" {
     node_count_min_per_zone     = 1
     node_count_max_per_zone     = 2
     node_labels                 = {}
+    node_taints                 = []
     max_pods_per_node           = 32
     machine_type                = "e2-micro"
     disk_type                   = "pd-standard"
