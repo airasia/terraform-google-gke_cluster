@@ -233,8 +233,9 @@ variable "node_pools" {
   
   disk_size_gb: Size of the disk on each node in Giga Bytes.
   
-  preemptible: Preemptible nodes last a maximum of 24 hours and helps reduce while providing no
-  availability guarantee. It is like spot instances in AWS EC2.
+  preemptible: Preemptible nodes last a maximum of 24 hours and helps reduce cost while providing no
+  availability guarantee. It is like spot instances in AWS EC2. Recommended for non-production
+  clusters to help save cost. Not recommended for production clusters to help maintain availability.
   
   max_surge: Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing
   a version upgrade. Raising the number would allow more number of node(s) to be upgraded
