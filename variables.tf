@@ -217,8 +217,8 @@ variable "node_pools" {
   and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified.
   See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#labels.
 
-  node_taints: Kubernetes taint to be applied to the each node of the nodepool. Supported values for
-  effect are NO_SCHEDULE, PREFER_NO_SCHEDULE, NO_EXECUTE.
+  node_taints: Kubernetes taint to be applied to each node of the nodepool. Supported values for
+  `effect` are `NO_SCHEDULE`, `PREFER_NO_SCHEDULE` or `NO_EXECUTE`.
   See https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
   
   max_pods_per_node: The maximum number of pods per node in this node pool. This value has direct
