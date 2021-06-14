@@ -252,6 +252,7 @@ variable "node_pools" {
     node_count_min_per_zone     = number
     node_count_max_per_zone     = number
     node_labels                 = map(string)
+    node_taints                 = list(object({ key = string, value = string, effect = string }))
     max_pods_per_node           = number
     machine_type                = string
     disk_type                   = string
@@ -268,6 +269,7 @@ variable "node_pools" {
     node_count_min_per_zone     = 1
     node_count_max_per_zone     = 2
     node_labels                 = {}
+    node_taints                 = []
     max_pods_per_node           = 32
     machine_type                = "e2-micro"
     disk_type                   = "pd-standard"
