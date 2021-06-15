@@ -7,9 +7,11 @@ output "usage_IAM_roles" {
 }
 
 output "cluster_endpoint" {
+  description = "The IP address of the GKE cluster master (a.k.a. the control-plane)."
   value = google_container_cluster.k8s_cluster.endpoint
 }
 
 output "cluster_ca_certificate" {
+  description = "Base64 encoded public certificate that is the root of trust for this cluster. Used for connecting to the cluster master via the \"cluster_endpoint\" attribute."
   value = base64decode(google_container_cluster.k8s_cluster.master_auth.0.cluster_ca_certificate)
 }
