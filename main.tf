@@ -27,11 +27,6 @@ locals {
         ["bad location_type"] # will force an error
   )))
 
-  # DO NOT rely on google_container_cluster.k8s_cluster.master_version to determine the value of gke_node_version.
-  # Otherwise, a RE-RUN of 'terraform apply' will be required for the changes
-  # to first be applied on the k8s masters, and then for that change to be detected (and applied) on the k8s nodes.
-  gke_node_version = var.gke_master_version
-
   predefined_node_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
 
   k8s_secrets = flatten([
@@ -149,7 +144,6 @@ resource "google_container_node_pool" "node_pools" {
   provider           = google-beta
   name               = each.value.node_pool_name
   location           = local.gke_location
-  version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
   initial_node_count = each.value.node_count_min_per_zone
   max_pods_per_node  = each.value.max_pods_per_node
@@ -159,7 +153,7 @@ resource "google_container_node_pool" "node_pools" {
   }
   management {
     auto_repair  = true
-    auto_upgrade = false
+    auto_upgrade = true # keeps the node version up-to-date with the cluster master version
   }
   upgrade_settings {
     max_surge       = each.value.max_surge
