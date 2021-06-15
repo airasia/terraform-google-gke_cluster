@@ -90,7 +90,7 @@ resource "google_container_cluster" "k8s_cluster" {
   node_locations           = local.node_locations
   network                  = var.vpc_network
   subnetwork               = var.vpc_subnetwork
-  min_master_version       = var.gke_master_version
+  min_master_version       = var.min_master_version
   logging_service          = var.cluster_logging_service
   monitoring_service       = var.cluster_monitoring_service
   enable_shielded_nodes    = var.enable_shielded_nodes

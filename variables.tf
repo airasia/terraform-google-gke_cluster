@@ -77,8 +77,8 @@ variable "sa_name" {
   default     = "gke"
 }
 
-variable "gke_master_version" {
-  description = "GKE version of the cluster master to be used. See https://cloud.google.com/kubernetes-engine/docs/release-notes. "
+variable "min_master_version" {
+  description = "The \"minimum\" version number that should be used by the GKE cluster master (a.k.a control-plane). Note that, this is not the same as the \"current\" version number of the cluster master which maybe higher than the \"min_master_version\" specified here. See https://cloud.google.com/kubernetes-engine/docs/release-notes."
   type        = string
   default     = "1.17.17-gke.2800"
 }
