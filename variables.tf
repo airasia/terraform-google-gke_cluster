@@ -119,7 +119,7 @@ variable "master_authorized_networks" {
 variable "enable_shielded_nodes" {
   description = "Enable Shielded Nodes feature on all nodes in the cluster. Toggling this value will drain, delete, and recreate all nodes in all node pools of this cluster. This may take a lot of time, depending on cluster size, usage and maintenance windows."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "enable_public_endpoint" {
