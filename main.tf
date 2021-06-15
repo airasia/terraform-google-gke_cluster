@@ -151,8 +151,7 @@ resource "google_container_node_pool" "node_pools" {
   location           = local.gke_location
   version            = local.gke_node_version
   cluster            = google_container_cluster.k8s_cluster.name
-  initial_node_count = each.value.node_count_initial_per_zone
-  node_count         = each.value.node_count_current_per_zone
+  initial_node_count = each.value.node_count_min_per_zone
   max_pods_per_node  = each.value.max_pods_per_node
   autoscaling {
     min_node_count = each.value.node_count_min_per_zone
@@ -182,6 +181,11 @@ resource "google_container_node_pool" "node_pools" {
       enable_secure_boot          = coalesce(each.value.enable_node_integrity, false)
       enable_integrity_monitoring = coalesce(each.value.enable_node_integrity, true)
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      initial_node_count # changes to this field triggers destruction/recreation. See https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_node_pool#initial_node_count
+    ]
   }
   depends_on = [google_project_service.container_api]
   timeouts {
