@@ -256,7 +256,7 @@ variable "node_pools" {
     node_count_min_per_zone = 1
     node_count_max_per_zone = 2
     node_labels             = {}
-    node_taints                 = []
+    node_taints             = []
     max_pods_per_node       = 32
     machine_type            = "e2-micro"
     disk_type               = "pd-standard"
