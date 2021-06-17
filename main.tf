@@ -283,4 +283,8 @@ resource "google_compute_firewall" "cluster_firewall" {
   }
 }
 
+# pubsub topic for version upgrade notifications
+# refer to Support Case https://console.cloud.google.com/support/cases/detail/28220614?project=airasia-spearheadiac-stg
+# refer to gcp doc https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-upgrade-notifications
+
 data "google_client_config" "google_client" {}
