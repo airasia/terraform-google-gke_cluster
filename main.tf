@@ -41,7 +41,10 @@ locals {
     "10250", "443", "15017", # for istio - see https://istio.io/latest/docs/setup/platform-setup/gke/
     "8080", "15000",         # for kiali - see https://kiali.io/documentation/latest/installation-guide/#_google_cloud_private_cluster_requirements
   ]
-  firewall_ingress_ports = distinct(concat(var.firewall_ingress_ports, local.istio_ports))
+  nginx_ports = length(distinct(var.nginx_ip_names)) == 0 ? [] : [
+    "8443" # see https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke
+  ]
+  firewall_ingress_ports = distinct(concat(var.firewall_ingress_ports, local.istio_ports, local.nginx_ports))
 }
 
 resource "random_string" "network_tag_substring" {
