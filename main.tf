@@ -5,7 +5,7 @@ terraform {
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
   cluster_firewall_name  = format("%s-%s", var.firewall_name, var.name_suffix)
-  node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
+  default_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
@@ -171,7 +171,7 @@ resource "google_container_node_pool" "node_pools" {
     labels          = merge(local.predefined_node_labels, each.value.node_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
-    tags            = local.node_network_tags
+    tags            = local.default_network_tags
     taint           = each.value.node_taints
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
@@ -268,7 +268,7 @@ resource "google_compute_firewall" "cluster_firewall" {
   name          = local.cluster_firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
-  target_tags   = local.node_network_tags
+  target_tags   = local.default_network_tags
   depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
     protocol = "tcp"
