@@ -171,7 +171,7 @@ resource "google_container_node_pool" "node_pools" {
     labels          = merge(local.predefined_node_labels, each.value.node_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
-    tags            = local.default_network_tags
+    tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
     taint           = each.value.node_taints
     shielded_instance_config {
       # set default values as per the defaults stated in google provider

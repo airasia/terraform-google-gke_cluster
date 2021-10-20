@@ -241,6 +241,9 @@ variable "node_pools" {
   of the nodes. These features are used alongside GKE Shielded Nodes feature. By default
   (when set to null), Integrity Monitoring is set to 'true' and Secure Boot is set to 'false'.
   See https://cloud.google.com/kubernetes-engine/docs/how-to/shielded-gke-nodes#node_integrity
+
+  network_tags: List of network tags to be applied to all nodes in a nodepool. Network tags are used
+  by VPC firewall rules to determine sources and targets.
   EOT
   type = list(object({
     node_pool_name          = string
@@ -249,6 +252,7 @@ variable "node_pools" {
     node_labels             = map(string)
     node_taints             = list(object({ key = string, value = string, effect = string }))
     max_pods_per_node       = number
+    network_tags            = list(string)
     machine_type            = string
     disk_type               = string
     disk_size_gb            = number
@@ -264,6 +268,7 @@ variable "node_pools" {
     node_labels             = {}
     node_taints             = []
     max_pods_per_node       = 32
+    network_tags            = []
     machine_type            = "e2-micro"
     disk_type               = "pd-standard"
     disk_size_gb            = 50
