@@ -150,6 +150,12 @@ variable "enable_addon_horizontal_pod_autoscaling" {
   default     = true
 }
 
+variable "default_max_pods_per_node" {
+  description = "The default maximum number of pods per node in this cluster. Every object in the node_pools variable  already has a max_pods_per_node attribute in it. However, this default_max_pods_per_node value is used by the default pool of the cluster when the cluster is being created for the first time - which BTW is deleted by terraform right after creation (see this module's source code for the attribute called 'remove_default_node_pool' which is set to true). So this value is used only for cluster creation and kept small by design. Override this value if you already have a cluster which was created previously with google's default max_pods_per_node value above 8. See https://cloud.google.com/kubernetes-engine/docs/how-to/flexible-pod-cidr"
+  type        = number
+  default     = 8
+}
+
 variable "max_surge" {
   description = "Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing a version upgrade. Raising the number would allow more number of node(s) to be upgraded simultaneously."
   type        = number
@@ -235,6 +241,9 @@ variable "node_pools" {
   of the nodes. These features are used alongside GKE Shielded Nodes feature. By default
   (when set to null), Integrity Monitoring is set to 'true' and Secure Boot is set to 'false'.
   See https://cloud.google.com/kubernetes-engine/docs/how-to/shielded-gke-nodes#node_integrity
+
+  network_tags: List of network tags to be applied to all nodes in a nodepool. Network tags are used
+  by VPC firewall rules to determine sources and targets.
   EOT
   type = list(object({
     node_pool_name          = string
@@ -243,6 +252,7 @@ variable "node_pools" {
     node_labels             = map(string)
     node_taints             = list(object({ key = string, value = string, effect = string }))
     max_pods_per_node       = number
+    network_tags            = list(string)
     machine_type            = string
     disk_type               = string
     disk_size_gb            = number
@@ -257,7 +267,8 @@ variable "node_pools" {
     node_count_max_per_zone = 2
     node_labels             = {}
     node_taints             = []
-    max_pods_per_node       = 32
+    max_pods_per_node       = 16
+    network_tags            = []
     machine_type            = "e2-micro"
     disk_type               = "pd-standard"
     disk_size_gb            = 50

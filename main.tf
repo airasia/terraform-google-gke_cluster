@@ -5,7 +5,7 @@ terraform {
 locals {
   cluster_name           = format("%s-%s", var.cluster_name, var.name_suffix)
   cluster_firewall_name  = format("%s-%s", var.firewall_name, var.name_suffix)
-  node_network_tags      = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
+  default_network_tags   = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
   master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
@@ -86,19 +86,20 @@ module "gke_service_account" {
 
 resource "google_container_cluster" "k8s_cluster" {
   # see https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
-  name                     = local.cluster_name
-  description              = var.cluster_description
-  resource_labels          = var.cluster_labels
-  location                 = local.gke_location
-  node_locations           = local.node_locations
-  network                  = var.vpc_network
-  subnetwork               = var.vpc_subnetwork
-  min_master_version       = var.min_master_version
-  logging_service          = var.cluster_logging_service
-  monitoring_service       = var.cluster_monitoring_service
-  enable_shielded_nodes    = var.enable_shielded_nodes
-  initial_node_count       = 1    # create just 1 node in the default_node_pool before removing it - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#initial_node_count
-  remove_default_node_pool = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
+  name                      = local.cluster_name
+  description               = var.cluster_description
+  resource_labels           = var.cluster_labels
+  location                  = local.gke_location
+  node_locations            = local.node_locations
+  network                   = var.vpc_network
+  subnetwork                = var.vpc_subnetwork
+  min_master_version        = var.min_master_version
+  logging_service           = var.cluster_logging_service
+  monitoring_service        = var.cluster_monitoring_service
+  enable_shielded_nodes     = var.enable_shielded_nodes
+  default_max_pods_per_node = var.default_max_pods_per_node
+  initial_node_count        = 1    # create just 1 node in the default_node_pool before removing it - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#initial_node_count
+  remove_default_node_pool  = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
   private_cluster_config {
     enable_private_nodes    = true
     enable_private_endpoint = ! var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
@@ -170,7 +171,7 @@ resource "google_container_node_pool" "node_pools" {
     labels          = merge(local.predefined_node_labels, each.value.node_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
-    tags            = local.node_network_tags
+    tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
     taint           = each.value.node_taints
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
@@ -267,7 +268,7 @@ resource "google_compute_firewall" "cluster_firewall" {
   name          = local.cluster_firewall_name
   network       = var.vpc_network
   source_ranges = [local.master_private_ip_cidr]
-  target_tags   = local.node_network_tags
+  target_tags   = local.default_network_tags
   depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
     protocol = "tcp"
