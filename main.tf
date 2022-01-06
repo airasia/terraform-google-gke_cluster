@@ -127,7 +127,7 @@ resource "google_container_cluster" "k8s_cluster" {
     horizontal_pod_autoscaling {
       disabled = ! var.enable_addon_horizontal_pod_autoscaling
     }
-    dns_cache_config {
+    dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
       enabled = var.enable_addon_dns_cache_config
     }
   }

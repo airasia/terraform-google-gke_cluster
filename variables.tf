@@ -153,7 +153,7 @@ variable "enable_addon_horizontal_pod_autoscaling" {
 variable "enable_addon_dns_cache_config" {
   description = "Whether to enable NodeLocal DNSCache addon. NodeLocal DNSCache improves DNS lookup latency, makes DNS lookup times more consistent, and reduces the number of DNS queries to kube-dns by running a DNS cache on each node in a cluster. It is disabled by default. See: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "default_max_pods_per_node" {
