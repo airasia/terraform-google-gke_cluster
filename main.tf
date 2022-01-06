@@ -86,6 +86,7 @@ module "gke_service_account" {
 
 resource "google_container_cluster" "k8s_cluster" {
   # see https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster
+  provider                  = google-beta
   name                      = local.cluster_name
   description               = var.cluster_description
   resource_labels           = var.cluster_labels
@@ -125,6 +126,9 @@ resource "google_container_cluster" "k8s_cluster" {
     }
     horizontal_pod_autoscaling {
       disabled = ! var.enable_addon_horizontal_pod_autoscaling
+    }
+    dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
+      enabled = var.enable_addon_dns_cache_config
     }
   }
   maintenance_policy {
