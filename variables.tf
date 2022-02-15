@@ -266,6 +266,7 @@ variable "node_pools" {
     max_surge               = number
     max_unavailable         = number
     enable_node_integrity   = bool
+    node_metadatas          = map(string)
   }))
   default = [{
     node_pool_name          = "gkenp-a"
@@ -282,6 +283,7 @@ variable "node_pools" {
     max_surge               = 1
     max_unavailable         = 0
     enable_node_integrity   = null
+    node_metadatas          = {}
   }]
 }
 
