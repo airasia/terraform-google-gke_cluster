@@ -7,7 +7,6 @@ locals {
   cluster_firewall_name  = format("%s-%s", var.firewall_name, var.name_suffix)
   default_network_tags   = [format("gke-%s-np-tf-%s", local.cluster_name, random_string.network_tag_substring.result)]
   oauth_scopes           = ["cloud-platform"] # FULL ACCESS to all GCloud services. Limit them by IAM roles in 'gke_service_account' - see https://cloud.google.com/compute/docs/access/service-accounts#accesscopesiam
-  master_private_ip_cidr = "172.16.0.0/28"    # the cluster master's private IP will be assigned from this CIDR - https://cloud.google.com/nat/docs/gke-example#step_2_create_a_private_cluster 
   pre_defined_sa_roles = [
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
@@ -104,7 +103,7 @@ resource "google_container_cluster" "k8s_cluster" {
   private_cluster_config {
     enable_private_nodes    = true
     enable_private_endpoint = ! var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
-    master_ipv4_cidr_block  = local.master_private_ip_cidr
+    master_ipv4_cidr_block  = var.master_private_ip_cidr
   }
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_ip_range_name
@@ -272,7 +271,7 @@ resource "google_compute_firewall" "cluster_firewall" {
   count         = length(local.firewall_ingress_ports) > 0 ? 1 : 0
   name          = local.cluster_firewall_name
   network       = var.vpc_network
-  source_ranges = [local.master_private_ip_cidr]
+  source_ranges = [var.master_private_ip_cidr]
   target_tags   = local.default_network_tags
   depends_on    = [google_container_node_pool.node_pools, google_project_service.networking_api]
   allow {
