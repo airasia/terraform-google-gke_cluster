@@ -48,7 +48,7 @@ Drop the use of attributes such as `node_count_initial_per_zone` and/or `node_co
 # Upgrade guide from v2.6.1 to v2.7.1
 
 This upgrade performs 2 changes:
-  - Move the declaration of kubernetes secrets into the declaration of kubernets namesapces
+  - Move the declaration of kubernetes secrets into the declaration of kubernetes namesapces
     - see the Pull Request description at https://github.com/airasia/terraform-google-gke_cluster/pull/7
   - Ability to create multiple ingress IPs for istio
     - read below
@@ -74,6 +74,7 @@ Detailed steps provided below:
    3. Use `terraform state mv` to manually move the state of `istioIpX` to `istioIpY`
       * refer to https://www.terraform.io/docs/commands/state/mv.html to learn more about how to move Terraform state positions
       * once a resource is moved, it will say `Successfully moved 1 object(s).`
+   4. The purpose of this channge is detailed in [this wiki](https://github.com/airasia/terraform-google-external_access/wiki/The-problem-of-%22shifting-all-items%22-in-an-array).
 5. Run `terraform plan` again
    1. the plan should now show that no changes required
    2. this confirms that you have successfully moved all your resources' states to their new position as required by `v2.7.1`.
@@ -82,6 +83,8 @@ Detailed steps provided below:
 ---
 
 # Upgrade guide from v2.4.2 to v2.5.1
+
+This upgrade will move the terraform states of arrays of ingress IPs and k8s namespaces from numbered indexes to named indexes. The purpose of this channge is detailed in [this wiki](https://github.com/airasia/terraform-google-external_access/wiki/The-problem-of-%22shifting-all-items%22-in-an-array).
 
 1. Upgrade `gke_cluster` module version to `2.5.1`
 2. Run `terraform plan` - DO NOT APPLY this plan
@@ -162,6 +165,13 @@ Detailed steps provided below:
 ---
 
 # Upgrade guide from v1.2.9 to v1.3.0
+
+This upgrade assigns network tags to the node pool nodes. The upgrade process will:
+  - Create an auxiliary node pool.
+  - Move all workloads from the existing node pool to the auxiliary node pool
+  - Assign network tags to the existing node pool (which causes destruction and recreation of that node pool)
+  - Move all workloads back from the auxiliary node pool into the new node pool (which now has network tags)
+  - Then delete auxiliary node pool.
 
 1. While at `v1.2.9`, set `create_auxiliary_node_pool` to `True` - this will create a new additional node pool according to the values of `var.auxiliary_node_pool_config` before proceeding with the breaking change.
    * Run `terraform apply`
