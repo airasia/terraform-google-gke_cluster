@@ -17,7 +17,13 @@ provider "helm" {
 
 Pay attention to the `gke_cluster` module output variables used here.
 
-# Fixing kubernetes "connection refused" error
+# Upgrade guide from v2.15.0 to v2.16.0
+
+Drop the use of attributes such as `node_count_initial_per_zone` and/or `node_count_current_per_zone` (if any) from the list of objects in `var.node_pools`.
+
+# Upgrade guide from v2.7.1 to v2.8.1
+
+## Fixing kubernetes "connection refused" error
 
 If you are using the `namespace` variable, you may get an error like the following:
 
@@ -40,10 +46,6 @@ data "google_client_config" "google_client" {}
 ```
 
 Pay attention to the `gke_cluster` module output variables used here.
-
-# Upgrade guide from v2.15.0 to v2.16.0
-
-Drop the use of attributes such as `node_count_initial_per_zone` and/or `node_count_current_per_zone` (if any) from the list of objects in `var.node_pools`.
 
 # Upgrade guide from v2.6.1 to v2.7.1
 
