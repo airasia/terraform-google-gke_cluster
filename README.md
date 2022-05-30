@@ -23,13 +23,12 @@ Drop the use of attributes such as `node_count_initial_per_zone` and/or `node_co
 
 # Upgrade guide from v2.7.1 to v2.8.1
 
-## Fixing kubernetes "connection refused" error
+While performing this upgrade, if you are using the `namespace` variable, you may run into one or more of the following errors:
 
-If you are using the `namespace` variable, you may get an error like the following:
-
-```
-Error: Get "http://localhost/api/v1/namespaces/<namespace_name>": dial tcp 127.0.0.1:80: connect: connection refused
-```
+- namespaces is forbidden
+- User "system:serviceaccount:devops:default" cannot create resource "namespaces" in API group ""
+- User "system:serviceaccount:devops:default" cannot get resource "namespaces" in API group ""
+- Get "http://localhost/api/v1/namespaces/<namespace_name>": dial tcp 127.0.0.1:80: connect: connection refused
 
 In order to fix this, you need to declare a `kubernetes` provider in your terraform configuration like the following.
 
