@@ -250,6 +250,8 @@ variable "node_pools" {
 
   network_tags: List of network tags to be applied to all nodes in a nodepool. Network tags are used
   by VPC firewall rules to determine sources and targets.
+
+  node_metadatas: Map of Compute Engine instance metadata (key-values) to be applied to all nodes in a nodepool. Instance metadata can be used to configure the behavior of the nodes / VM instances.
   EOT
   type = list(object({
     node_pool_name          = string
