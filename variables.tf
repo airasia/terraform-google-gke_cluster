@@ -150,10 +150,10 @@ variable "enable_addon_horizontal_pod_autoscaling" {
   default     = true
 }
 
-variable "enable_addon_vertical_pod_autoscaling" {
-  description = "Whether to enable Vertical Pod Autoscaling addon which autoscales based on usage of pods."
+variable "enable_vertical_pod_autoscaling" {
   type        = bool
-  default     = true
+  description = "Whether to enable Vertical Pod Autoscaling which autoscales based on usage of pods."
+  default     = false
 }
 
 variable "enable_addon_dns_cache_config" {

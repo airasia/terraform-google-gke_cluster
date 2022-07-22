@@ -96,6 +96,7 @@ resource "google_container_cluster" "k8s_cluster" {
   min_master_version        = var.min_master_version
   logging_service           = var.cluster_logging_service
   monitoring_service        = var.cluster_monitoring_service
+  vertical_pod_autoscaling  = var.enable_vertical_pod_autoscaling
   enable_shielded_nodes     = var.enable_shielded_nodes
   default_max_pods_per_node = var.default_max_pods_per_node
   initial_node_count        = 1    # create just 1 node in the default_node_pool before removing it - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#initial_node_count
@@ -125,9 +126,6 @@ resource "google_container_cluster" "k8s_cluster" {
     }
     horizontal_pod_autoscaling {
       disabled = ! var.enable_addon_horizontal_pod_autoscaling
-    }
-    vertical_pod_autoscaling {
-      disabled = ! var.enable_addon_vertical_pod_autoscaling
     }
     dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
       enabled = var.enable_addon_dns_cache_config
