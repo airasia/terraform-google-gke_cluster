@@ -119,6 +119,9 @@ resource "google_container_cluster" "k8s_cluster" {
       }
     }
   }
+  vertical_pod_autoscaling {
+    enabled = var.enable_vertical_pod_autoscaling
+  }
   addons_config {
     http_load_balancing {
       disabled = ! var.enable_addon_http_load_balancing
