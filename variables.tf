@@ -238,9 +238,13 @@ variable "node_pools" {
   disk_size_gb: Size of the disk on each node in Giga Bytes.
   
   preemptible: Preemptible nodes last a maximum of 24 hours and helps reduce cost while providing no
-  availability guarantee. It is like spot instances in AWS EC2. Recommended for non-production
-  clusters to help save cost. Not recommended for production clusters to help maintain availability.
-  
+  availability guarantee. It can be used for non-production clusters to help save cost. Not recommended
+  for production clusters to help maintain availability. Only one of 'preemptible' or 'spot' can be enabled at a time.
+
+  spot: Spot VMs are the latest version of preemptible VMs. They do not have a maximum runtime limitation.
+  It is like spot instances in AWS EC2. Recommended for non-production clusters to help save cost. Only one of
+  'preemptible' or 'spot' can be enabled at a time.
+
   max_surge: Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing
   a version upgrade. Raising the number would allow more number of node(s) to be upgraded
   simultaneously.
@@ -271,6 +275,7 @@ variable "node_pools" {
     disk_type               = string
     disk_size_gb            = number
     preemptible             = bool
+    spot                    = bool
     max_surge               = number
     max_unavailable         = number
     enable_node_integrity   = bool
@@ -288,6 +293,7 @@ variable "node_pools" {
     disk_type               = "pd-standard"
     disk_size_gb            = 50
     preemptible             = false
+    spot                    = false
     max_surge               = 1
     max_unavailable         = 0
     enable_node_integrity   = null

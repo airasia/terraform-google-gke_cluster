@@ -1,5 +1,15 @@
 terraform {
   required_version = ">= 0.13.1" # see https://releases.hashicorp.com/terraform/
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
+    }
+  }
 }
 
 locals {
@@ -174,6 +184,7 @@ resource "google_container_node_pool" "node_pools" {
     disk_type       = each.value.disk_type
     disk_size_gb    = each.value.disk_size_gb
     preemptible     = each.value.preemptible
+    spot            = each.value.spot
     labels          = merge(local.predefined_node_labels, each.value.node_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
