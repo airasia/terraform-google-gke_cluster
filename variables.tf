@@ -74,7 +74,7 @@ variable "firewall_ingress_ports" {
 variable "sa_name" {
   description = "An arbitrary name to identify the ServiceAccount that will be generated & attached to the k8s cluster nodes."
   type        = string
-  default     = "gke"
+  default     = "gke-sa"
 }
 
 variable "min_master_version" {
