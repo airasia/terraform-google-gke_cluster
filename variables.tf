@@ -239,10 +239,11 @@ variable "node_pools" {
   
   preemptible: Preemptible nodes last a maximum of 24 hours and helps reduce cost while providing no
   availability guarantee. It can be used for non-production clusters to help save cost. Not recommended
-  for production clusters to help maintain availability.
+  for production clusters to help maintain availability. Only one of 'preemptible' or 'spot' can be enabled at a time.
 
   spot: Spot VMs are the latest version of preemptible VMs. They do not have a maximum runtime limitation.
-  It is like spot instances in AWS EC2. Recommended for non-production clusters to help save cost.
+  It is like spot instances in AWS EC2. Recommended for non-production clusters to help save cost. Only one of
+  'preemptible' or 'spot' can be enabled at a time.
 
   max_surge: Max number of node(s) that can be over-provisioned while the GKE cluster is undergoing
   a version upgrade. Raising the number would allow more number of node(s) to be upgraded
