@@ -269,9 +269,9 @@ resource "helm_release" "nginx_ingress_controller" {
   create_namespace = true
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
-  version          = "3.31.0"
+  version          = "4.0.1"
   values = [
-    # values.yaml file contents copied from official repo at https://github.com/kubernetes/ingress-nginx/releases/tag/helm-chart-3.31.0
+    # values.yaml file contents copied from official repo at https://github.com/kubernetes/ingress-nginx/releases/tag/helm-chart-4.0.1
     file("${path.module}/helm/nginx-ingress-values.yaml")
   ]
   set_sensitive {
