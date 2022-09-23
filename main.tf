@@ -3,11 +3,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
+      version = ">= 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = "~> 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
+      version = ">= 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
     }
   }
 }
