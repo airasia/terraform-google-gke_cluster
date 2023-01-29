@@ -54,6 +54,10 @@ locals {
     "8443" # see https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke
   ]
   firewall_ingress_ports = distinct(concat(var.firewall_ingress_ports, local.istio_ports, local.nginx_ports))
+
+  workload_identity_config = ! var.enable_workload_identity ? [] : var.identity_namespace == null ? [{
+  identity_namespace = "${var.gcp_project_id}.svc.id.goog" }] : [{ identity_namespace = var.identity_namespace
+  }]
 }
 
 resource "random_string" "network_tag_substring" {
@@ -141,6 +145,13 @@ resource "google_container_cluster" "k8s_cluster" {
     }
     dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
       enabled = var.enable_addon_dns_cache_config
+    }
+  }
+  dynamic "workload_identity_config" {
+    for_each = local.workload_identity_config
+
+    content {
+      workload_pool = "${var.gcp_project_id}.svc.id.goog"
     }
   }
   maintenance_policy {
