@@ -31,6 +31,15 @@ variable "services_ip_range_name" {
   type        = string
 }
 
+variable "security_group_name" {
+  description = "Google Group name to be used for GKE RBAC via Google Groups."
+  type        = string
+  validation {
+    condition     = can(regex("^gke-security-groups@", var.security_group_name))
+    error_message = "Group name must be in format gke-security-groups@yourdomain.com."
+  }
+}
+
 # ----------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # ----------------------------------------------------------------------------------------------------------------------

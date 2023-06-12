@@ -115,6 +115,9 @@ resource "google_container_cluster" "k8s_cluster" {
     enable_private_endpoint = !var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
     master_ipv4_cidr_block  = var.master_private_ip_cidr
   }
+  authenticator_groups_config {
+    security_group = var.security_group_name
+  }
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_ip_range_name
     services_secondary_range_name = var.services_ip_range_name
