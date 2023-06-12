@@ -126,6 +126,12 @@ variable "master_authorized_networks" {
   default = []
 }
 
+variable "enable_workload_identity" {
+  description = "Enable Workload Identity to authenticate to Google APIs."
+  type        = bool
+  default     = false
+}
+
 variable "enable_shielded_nodes" {
   description = "Enable Shielded Nodes feature on all nodes in the cluster. Toggling this value will drain, delete, and recreate all nodes in all node pools of this cluster. This may take a lot of time, depending on cluster size, usage and maintenance windows."
   type        = bool
@@ -271,45 +277,52 @@ variable "node_pools" {
   network_tags: List of network tags to be applied to all nodes in a nodepool. Network tags are used
   by VPC firewall rules to determine sources and targets.
 
+  enable_gke_metadata_server: Run the GKE Metadata Server on this node pool. The GKE Metadata Server exposes a metadata
+  API to workloads that is compatible with the V1 Compute Metadata APIs exposed by the Compute Engine and App Engine
+  Metadata Servers. This feature can only be enabled if Workload Identity is enabled (`enable_workload_identity`) at
+  the cluster level.
+
   node_metadatas: Map of Compute Engine instance metadata (key-values) to be applied to all nodes in a nodepool. Instance metadata can be used to configure the behavior of the nodes / VM instances.
   EOT
   type = list(object({
-    node_pool_name          = string
-    node_count_min_per_zone = number
-    node_count_max_per_zone = number
-    node_labels             = map(string)
-    node_taints             = list(object({ key = string, value = string, effect = string }))
-    max_pods_per_node       = number
-    network_tags            = list(string)
-    machine_type            = string
-    disk_type               = string
-    disk_size_gb            = number
-    preemptible             = bool
-    spot                    = bool
-    max_surge               = number
-    max_unavailable         = number
-    enable_node_integrity   = bool
-    node_metadatas          = map(string)
-    gpu_type                = map(string)
+    node_pool_name             = string
+    node_count_min_per_zone    = number
+    node_count_max_per_zone    = number
+    node_labels                = map(string)
+    node_taints                = list(object({ key = string, value = string, effect = string }))
+    max_pods_per_node          = number
+    network_tags               = list(string)
+    machine_type               = string
+    disk_type                  = string
+    disk_size_gb               = number
+    preemptible                = bool
+    spot                       = bool
+    max_surge                  = number
+    max_unavailable            = number
+    enable_node_integrity      = bool
+    enable_gke_metadata_server = bool
+    node_metadatas             = map(string)
+    gpu_type                   = map(string)
   }))
   default = [{
-    node_pool_name          = "gkenp-a"
-    node_count_min_per_zone = 1
-    node_count_max_per_zone = 2
-    node_labels             = {}
-    node_taints             = []
-    max_pods_per_node       = 16
-    network_tags            = []
-    machine_type            = "e2-micro"
-    disk_type               = "pd-standard"
-    disk_size_gb            = 50
-    preemptible             = false
-    spot                    = false
-    max_surge               = 1
-    max_unavailable         = 0
-    enable_node_integrity   = null
-    node_metadatas          = {}
-    gpu_type                = null
+    node_pool_name             = "gkenp-a"
+    node_count_min_per_zone    = 1
+    node_count_max_per_zone    = 2
+    node_labels                = {}
+    node_taints                = []
+    max_pods_per_node          = 16
+    network_tags               = []
+    machine_type               = "e2-micro"
+    disk_type                  = "pd-standard"
+    disk_size_gb               = 50
+    preemptible                = false
+    spot                       = false
+    max_surge                  = 1
+    max_unavailable            = 0
+    enable_node_integrity      = null
+    enable_gke_metadata_server = false
+    node_metadatas             = {}
+    gpu_type                   = null
   }]
 }
 
