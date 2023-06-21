@@ -360,3 +360,8 @@ variable "master_private_ip_cidr" {
   type        = string
   default     = "172.16.0.0/28"
 }
+
+variable "gpu_type" {
+  default     = "GPU_TYPE"
+  description = "the GPU accelerator type"
+}
