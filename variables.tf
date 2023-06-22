@@ -362,6 +362,6 @@ variable "master_private_ip_cidr" {
 }
 
 variable "gpu_type" {
-  default     = []
+  default     = "nvidia-tesla-t4"
   description = "the GPU accelerator type"
 }
