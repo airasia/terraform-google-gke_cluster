@@ -362,6 +362,6 @@ variable "master_private_ip_cidr" {
 }
 
 variable "gpu_type" {
-  default     = "GPU_TYPE"
+  default     = []
   description = "the GPU accelerator type"
 }
