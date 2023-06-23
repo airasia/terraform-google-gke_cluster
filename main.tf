@@ -179,10 +179,6 @@ resource "google_container_node_pool" "node_pools" {
     max_surge       = each.value.max_surge
     max_unavailable = each.value.max_unavailable
   }
-  guest_accelerator {
-    type  = each.value.gpu_type
-    count = each.value.gpu_type != "" ? 1 : 0
-  }
   node_config {
     machine_type    = each.value.machine_type
     disk_type       = each.value.disk_type
@@ -195,6 +191,10 @@ resource "google_container_node_pool" "node_pools" {
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
     taint           = each.value.node_taints
     metadata        = each.value.node_metadatas #see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata
+    guest_accelerator {
+    type  = each.value.gpu_type
+    count = each.value.gpu_type != "" ? 1 : 0
+  }
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
       # see https://registry.terraform.io/providers/hashicorp/google/3.65.0/docs/resources/container_cluster
