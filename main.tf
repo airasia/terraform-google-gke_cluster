@@ -191,10 +191,13 @@ resource "google_container_node_pool" "node_pools" {
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
     taint           = each.value.node_taints
     metadata        = each.value.node_metadatas #see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata
-    guest_accelerator {
-    type  = each.value.gpu_type
-    count = each.value.gpu_type != "" ? 1 : 0
-  }
+    dynamic "guest_accelerator" {
+      for_each = each.value.gpu_type == null ? [] : [each.value.gpu_type]
+      content {
+        type  = guest_accelerator.value
+        count = 1
+      }
+    }
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
       # see https://registry.terraform.io/providers/hashicorp/google/3.65.0/docs/resources/container_cluster
