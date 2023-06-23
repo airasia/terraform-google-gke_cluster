@@ -280,6 +280,7 @@ variable "node_pools" {
     max_unavailable         = number
     enable_node_integrity   = bool
     node_metadatas          = map(string)
+    gpu_type                = string
   }))
   default = [{
     node_pool_name          = "gkenp-a"
@@ -298,6 +299,7 @@ variable "node_pools" {
     max_unavailable         = 0
     enable_node_integrity   = null
     node_metadatas          = {}
+    gpu_type                = null
   }]
 }
 
@@ -359,9 +361,4 @@ variable "master_private_ip_cidr" {
   description = "The IP range in CIDR notation to use for the hosted master network. This range will be used for assigning private IP addresses to the cluster master(s) and the ILB VIP. This range must not overlap with any other ranges in use within the cluster's network, and it must be a /28 subnet"
   type        = string
   default     = "172.16.0.0/28"
-}
-
-variable "gpu_type" {
-  default     = "nvidia-tesla-t4"
-  description = "the GPU accelerator type"
 }
