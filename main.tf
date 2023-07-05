@@ -112,7 +112,7 @@ resource "google_container_cluster" "k8s_cluster" {
   remove_default_node_pool  = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = !var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
+    enable_private_endpoint = ! var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
     master_ipv4_cidr_block  = var.master_private_ip_cidr
   }
   ip_allocation_policy {
@@ -134,10 +134,10 @@ resource "google_container_cluster" "k8s_cluster" {
   }
   addons_config {
     http_load_balancing {
-      disabled = !var.enable_addon_http_load_balancing
+      disabled = ! var.enable_addon_http_load_balancing
     }
     horizontal_pod_autoscaling {
-      disabled = !var.enable_addon_horizontal_pod_autoscaling
+      disabled = ! var.enable_addon_horizontal_pod_autoscaling
     }
     dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
       enabled = var.enable_addon_dns_cache_config
@@ -191,6 +191,13 @@ resource "google_container_node_pool" "node_pools" {
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
     taint           = each.value.node_taints
     metadata        = each.value.node_metadatas #see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata
+    dynamic "guest_accelerator" {
+      for_each = each.value.gpu_type == null ? [] : [each.value.gpu_type]
+      content {
+        type  = guest_accelerator.value.type
+        count = guest_accelerator.value.count
+      }
+    }
     shielded_instance_config {
       # set default values as per the defaults stated in google provider
       # see https://registry.terraform.io/providers/hashicorp/google/3.65.0/docs/resources/container_cluster

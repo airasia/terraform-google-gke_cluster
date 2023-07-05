@@ -20,3 +20,4 @@ output "current_master_version" {
   description = "Current version number of the GKE cluster master (a.k.a. the control-plane)."
   value       = google_container_cluster.k8s_cluster.master_version
 }
+
