@@ -280,7 +280,7 @@ variable "node_pools" {
     max_unavailable         = number
     enable_node_integrity   = bool
     node_metadatas          = map(string)
-    gpu_type                = string
+    gpu_type                = map(string)
   }))
   default = [{
     node_pool_name          = "gkenp-a"
