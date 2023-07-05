@@ -194,8 +194,8 @@ resource "google_container_node_pool" "node_pools" {
     dynamic "guest_accelerator" {
       for_each = each.value.gpu_type == null ? [] : [each.value.gpu_type]
       content {
-        type  = guest_accelerator.value
-        count = 1
+        type  = guest_accelerator.value.type
+        count = guest_accelerator.value.count
       }
     }
     shielded_instance_config {
