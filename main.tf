@@ -170,6 +170,7 @@ resource "google_container_node_pool" "node_pools" {
   autoscaling {
     min_node_count = each.value.node_count_min_per_zone
     max_node_count = each.value.node_count_max_per_zone
+    location_policy = var.location_policy
   }
   management {
     auto_repair  = true

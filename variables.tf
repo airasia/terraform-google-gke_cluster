@@ -362,3 +362,9 @@ variable "master_private_ip_cidr" {
   type        = string
   default     = "172.16.0.0/28"
 }
+
+variable "location_policy" {
+  description = "Location policy specifies the algorithm used when scaling-up the node pool. Location policy is supported only in 1.24.1+ clusters."
+  type        = string
+  default     = "BALANCED"
+}
