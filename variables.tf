@@ -31,16 +31,6 @@ variable "services_ip_range_name" {
   type        = string
 }
 
-variable "security_group_name" {
-  description = "Google Group name to be used for GKE RBAC via Google Groups."
-  type        = string
-  validation {
-    condition     = var.security_group_name == null || can(regex("^gke-security-groups@", var.security_group_name))
-    error_message = "Group name must be in format gke-security-groups@yourdomain.com."
-  }
-  default = null
-}
-
 # ----------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # ----------------------------------------------------------------------------------------------------------------------
@@ -390,4 +380,14 @@ variable "location_policy" {
   description = "Location policy specifies the algorithm used when scaling-up the node pool. Location policy is supported only in 1.24.1+ clusters."
   type        = string
   default     = "BALANCED"
+}
+
+variable "security_group_name" {
+  description = "Google Group name to be used for GKE RBAC via Google Groups."
+  type        = string
+  validation {
+    condition     = var.security_group_name == null || can(regex("^gke-security-groups@", var.security_group_name))
+    error_message = "Group name must be in format gke-security-groups@yourdomain.com."
+  }
+  default = null
 }
