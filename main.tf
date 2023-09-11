@@ -3,11 +3,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
+      version = ">= 4.45.0" # see https://github.com/terraform-providers/terraform-provider-google/releases
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = ">= 4.27.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
+      version = ">= 4.45.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
     }
   }
 }
@@ -121,6 +121,9 @@ resource "google_container_cluster" "k8s_cluster" {
       security_group = var.security_group_name
     }
   }
+  workload_identity_config {
+    workload_pool = var.enable_workload_identity ? "${data.google_client_config.google_client.project}.svc.id.goog" : null
+  }
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_ip_range_name
     services_secondary_range_name = var.services_ip_range_name
@@ -210,6 +213,9 @@ resource "google_container_node_pool" "node_pools" {
       # see https://registry.terraform.io/providers/hashicorp/google/3.65.0/docs/resources/container_cluster
       enable_secure_boot          = coalesce(each.value.enable_node_integrity, false)
       enable_integrity_monitoring = coalesce(each.value.enable_node_integrity, true)
+    }
+    workload_metadata_config {
+      mode = each.value.enable_gke_metadata_server && var.enable_workload_identity ? "GKE_METADATA" : "MODE_UNSPECIFIED"
     }
   }
   lifecycle {
