@@ -391,3 +391,9 @@ variable "security_group_name" {
   }
   default = null
 }
+
+variable "security_bulletins_topic" {
+  description = "The ID of pubsub topic to send security bulletin notifications. Must be in the same project as the cluster."
+  type        = string
+  default     = null
+}

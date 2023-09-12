@@ -53,7 +53,8 @@ locals {
   nginx_ports = length(distinct(var.nginx_ip_names)) == 0 ? [] : [
     "8443" # see https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke
   ]
-  firewall_ingress_ports = distinct(concat(var.firewall_ingress_ports, local.istio_ports, local.nginx_ports))
+  firewall_ingress_ports    = distinct(concat(var.firewall_ingress_ports, local.istio_ports, local.nginx_ports))
+  enable_security_bulletins = var.security_bulletins_topic == null ? false : true
 }
 
 resource "random_string" "network_tag_substring" {
@@ -160,6 +161,18 @@ resource "google_container_cluster" "k8s_cluster" {
       recurrence = "FREQ=WEEKLY;BYDAY=${var.maintenance_window.days_of_week}" # remains unchanged by timezone conversion
     }
   }
+  notification_config {
+    pubsub {
+      enabled = local.enable_security_bulletins
+      topic   = var.security_bulletins_topic
+      dynamic "filter" {
+        for_each = local.enable_security_bulletins ? [0] : []
+        content {
+          event_type = ["SECURITY_BULLETIN_EVENT"]
+        }
+      }
+    }
+  }
   depends_on = [google_project_service.container_api]
   timeouts {
     create = var.cluster_timeout
@@ -215,7 +228,7 @@ resource "google_container_node_pool" "node_pools" {
       enable_integrity_monitoring = coalesce(each.value.enable_node_integrity, true)
     }
     workload_metadata_config {
-      mode = each.value.enable_gke_metadata_server && var.enable_workload_identity ? "GKE_METADATA" : "MODE_UNSPECIFIED"
+      mode = each.value.enable_gke_metadata_server && var.enable_workload_identity ? "GKE_METADATA" : "GCE_METADATA"
     }
   }
   lifecycle {
