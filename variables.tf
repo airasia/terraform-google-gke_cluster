@@ -272,6 +272,9 @@ variable "node_pools" {
   Metadata Servers. This feature can only be enabled if Workload Identity is enabled (`enable_workload_identity`) at
   the cluster level.
 
+  gpu_type: Compute Engine provides graphics processing units (GPUs) that you can add to your virtual machine (VM) instances. You can use these GPUs to accelerate specific workloads on your VMs such as machine learning and data processing.
+  See https://cloud.google.com/compute/docs/gpus & https://cloud.google.com/compute/docs/machine-resource#gpus
+
   node_metadatas: Map of Compute Engine instance metadata (key-values) to be applied to all nodes in a nodepool. Instance metadata can be used to configure the behavior of the nodes / VM instances.
   EOT
   type = list(object({
