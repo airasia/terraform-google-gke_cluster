@@ -213,6 +213,14 @@ variable "maintenance_window" {
   }
 }
 
+variable "maintenance_exclusions" {
+  description = <<-EOT
+  Place holder 
+  EOT
+  type = list(map(string))
+  default = []
+}
+
 variable "node_pools" {
   description = <<-EOT
   node_pool_name: An arbitrary name to identify the GKE node pool and its VMs & VM instance groups.

@@ -113,7 +113,7 @@ resource "google_container_cluster" "k8s_cluster" {
   remove_default_node_pool  = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = ! var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
+    enable_private_endpoint = !var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
     master_ipv4_cidr_block  = var.master_private_ip_cidr
   }
   dynamic "authenticator_groups_config" {
@@ -144,10 +144,10 @@ resource "google_container_cluster" "k8s_cluster" {
   }
   addons_config {
     http_load_balancing {
-      disabled = ! var.enable_addon_http_load_balancing
+      disabled = !var.enable_addon_http_load_balancing
     }
     horizontal_pod_autoscaling {
-      disabled = ! var.enable_addon_horizontal_pod_autoscaling
+      disabled = !var.enable_addon_horizontal_pod_autoscaling
     }
     dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
       enabled = var.enable_addon_dns_cache_config
@@ -160,6 +160,34 @@ resource "google_container_cluster" "k8s_cluster" {
       end_time   = "2021-01-01T${var.maintenance_window.end_time_utc}:00Z"    # disregard the dates
       recurrence = "FREQ=WEEKLY;BYDAY=${var.maintenance_window.days_of_week}" # remains unchanged by timezone conversion
     }
+    dynamic "maintenance_exclusion" {
+      for_each = var.maintenance_exclusions
+      iterator = maintenance_exclusion
+      content {
+        exclusion_name = maintenance_exclusion.value.exclusion_name
+        start_time     = maintenance_exclusion.value.start_time
+        end_time       = maintenance_exclusion.value.end_time
+        exclusion_options {
+          scope = maintenance_exclusion.value.scope
+        }
+      }
+    }
+    # maintenance_exclusion {
+    #   exclusion_name = "batch job"
+    #   start_time     = "2019-01-01T00:00:00Z"
+    #   end_time       = "2019-01-02T00:00:00Z"
+    #   exclusion_options {
+    #     scope = "NO_UPGRADES"
+    #   }
+    # }
+    # maintenance_exclusion {
+    #   exclusion_name = "holiday data load"
+    #   start_time     = "2019-05-01T00:00:00Z"
+    #   end_time       = "2019-05-02T00:00:00Z"
+    #   exclusion_options {
+    #     scope = "NO_MINOR_UPGRADES"
+    #   }
+    # }
   }
   notification_config {
     pubsub {
