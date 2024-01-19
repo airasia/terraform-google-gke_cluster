@@ -227,8 +227,13 @@ variable "maintenance_exclusions" {
   https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#exclusions
   https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions#configuring_a_maintenance_exclusion
   EOT
-  type        = list(map(string))
-  default     = []
+  type = list(object({
+    exclusion_name = string #Ex - "chinese new year 2024 holiday"
+    start_time     = string #Ex - "2024-02-03T00:00:00Z" implies 8am 3rd February,2024 
+    end_time       = string #Ex - "2024-02-10T00:00:00Z" implies 8am 10th February,2024 
+    scope          = string #Ex - "NO_MINOR_UPGRADES" or "NO_UPGRADES" or "NO_MINOR_OR_NODE_UPGRADES"
+  }))
+  default = []
 }
 
 variable "node_pools" {
