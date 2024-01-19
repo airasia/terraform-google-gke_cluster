@@ -224,6 +224,7 @@ variable "maintenance_exclusions" {
   - You can have a maximum of 20 maintenance exclusions in total.
   - If you do not specify a scope in your exclusion, the scope defaults to "no upgrades".
   - start_time and end_time should be in UTC. 
+  
   https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#exclusions
   https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions#configuring_a_maintenance_exclusion
   
