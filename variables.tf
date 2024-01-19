@@ -234,6 +234,10 @@ variable "maintenance_exclusions" {
     scope          = string #Ex - "NO_MINOR_UPGRADES" or "NO_UPGRADES" or "NO_MINOR_OR_NODE_UPGRADES"
   }))
   default = []
+  validation {
+    condition     = contains(["NO_MINOR_UPGRADES", "NO_UPGRADES","NO_MINOR_OR_NODE_UPGRADES"], var.maintenance_exclusions.scope)
+    error_message = "The scope must be either 'NO_MINOR_UPGRADES' or 'NO_UPGRADES' or 'NO_MINOR_OR_NODE_UPGRADES'"
+  }
 }
 
 variable "node_pools" {
