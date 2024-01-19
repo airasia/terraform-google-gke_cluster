@@ -226,7 +226,7 @@ variable "maintenance_exclusions" {
 
   https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#exclusions
   https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions#configuring_a_maintenance_exclusion
-  start_time and end_time both are in UTC which is 8 hours behind Malaysia time. 
+  start_time and end_time should be in UTC. 
   EOT
   type = list(object({
     exclusion_name = string #Ex - "chinese new year 2024 holiday"
