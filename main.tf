@@ -172,22 +172,6 @@ resource "google_container_cluster" "k8s_cluster" {
         }
       }
     }
-    # maintenance_exclusion {
-    #   exclusion_name = "batch job"
-    #   start_time     = "2019-01-01T00:00:00Z"
-    #   end_time       = "2019-01-02T00:00:00Z"
-    #   exclusion_options {
-    #     scope = "NO_UPGRADES"
-    #   }
-    # }
-    # maintenance_exclusion {
-    #   exclusion_name = "holiday data load"
-    #   start_time     = "2019-05-01T00:00:00Z"
-    #   end_time       = "2019-05-02T00:00:00Z"
-    #   exclusion_options {
-    #     scope = "NO_MINOR_UPGRADES"
-    #   }
-    # }
   }
   notification_config {
     pubsub {

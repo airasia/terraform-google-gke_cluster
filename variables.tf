@@ -215,10 +215,20 @@ variable "maintenance_window" {
 
 variable "maintenance_exclusions" {
   description = <<-EOT
-  Place holder 
+  A maintenance exclusion is a non-repeating window of time during which automatic maintenance is forbidden. 
+  You can configure maintenance windows and maintenance exclusions separately and independently. You can configure multiple maintenance exclusions.
+  Maintenance exclusions have the following limitations:
+
+  - You can restrict the scope of automatic upgrades in a maintenance exclusion only for clusters that are enrolled in a release channel.
+  - You can add a maximum of 3 maintenance exclusions that exclude all upgrades (that is, a scope of "no upgrades").
+  - You can have a maximum of 20 maintenance exclusions in total.
+  - If you do not specify a scope in your exclusion, the scope defaults to "no upgrades".
+
+  https://cloud.google.com/kubernetes-engine/docs/concepts/maintenance-windows-and-exclusions#exclusions
+  https://cloud.google.com/kubernetes-engine/docs/how-to/maintenance-windows-and-exclusions#configuring_a_maintenance_exclusion
   EOT
-  type = list(map(string))
-  default = []
+  type        = list(map(string))
+  default     = []
 }
 
 variable "node_pools" {
