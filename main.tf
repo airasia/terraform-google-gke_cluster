@@ -113,13 +113,19 @@ resource "google_container_cluster" "k8s_cluster" {
   remove_default_node_pool  = true # remove the default_node_pool immediately as we will use a custom node_pool - see https://www.terraform.io/docs/providers/google/r/container_cluster.html#remove_default_node_pool
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = ! var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
+    enable_private_endpoint = !var.enable_public_endpoint # see https://stackoverflow.com/a/57814380/636762
     master_ipv4_cidr_block  = var.master_private_ip_cidr
   }
   dynamic "authenticator_groups_config" {
     for_each = var.security_group_name == null ? [] : [0]
     content {
       security_group = var.security_group_name
+    }
+  }
+  dynamic "cluster_autoscaling" {
+    for_each = var.cluster_autoscaling_profile == null ? [] : [0]
+    content {
+      autoscaling_profile = var.cluster_autoscaling_profile
     }
   }
   workload_identity_config {
@@ -144,10 +150,10 @@ resource "google_container_cluster" "k8s_cluster" {
   }
   addons_config {
     http_load_balancing {
-      disabled = ! var.enable_addon_http_load_balancing
+      disabled = !var.enable_addon_http_load_balancing
     }
     horizontal_pod_autoscaling {
-      disabled = ! var.enable_addon_horizontal_pod_autoscaling
+      disabled = !var.enable_addon_horizontal_pod_autoscaling
     }
     dns_cache_config { #see: https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache
       enabled = var.enable_addon_dns_cache_config
@@ -161,6 +167,7 @@ resource "google_container_cluster" "k8s_cluster" {
       recurrence = "FREQ=WEEKLY;BYDAY=${var.maintenance_window.days_of_week}" # remains unchanged by timezone conversion
     }
   }
+  # autoscaling_profile = 
   notification_config {
     pubsub {
       enabled = local.enable_security_bulletins
@@ -190,9 +197,11 @@ resource "google_container_node_pool" "node_pools" {
   initial_node_count = each.value.node_count_min_per_zone
   max_pods_per_node  = each.value.max_pods_per_node
   autoscaling {
-    min_node_count  = each.value.node_count_min_per_zone
-    max_node_count  = each.value.node_count_max_per_zone
-    location_policy = var.location_policy
+    min_node_count       = each.value.node_count_min_per_zone
+    max_node_count       = each.value.node_count_max_per_zone
+    location_policy      = var.location_policy
+    total_min_node_count = each.value.total_min_node_count
+    total_max_node_count = each.value.total_max_node_count
   }
   management {
     auto_repair  = true
