@@ -167,7 +167,6 @@ resource "google_container_cluster" "k8s_cluster" {
       recurrence = "FREQ=WEEKLY;BYDAY=${var.maintenance_window.days_of_week}" # remains unchanged by timezone conversion
     }
   }
-  # autoscaling_profile = 
   notification_config {
     pubsub {
       enabled = local.enable_security_bulletins
