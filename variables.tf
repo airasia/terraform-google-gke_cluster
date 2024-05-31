@@ -222,6 +222,10 @@ variable "node_pools" {
   
   node_count_max_per_zone: The maximum number of nodes (per zone) this nodepool will allocate if
   auto-up-scaling occurs.
+
+  total_min_node_count: (Optional) Total minimum number of nodes in the NodePool. Must be >=0 and <= total_max_node_count. Cannot be used with per zone limits. Total size limits are supported only in 1.24.1+ clusters.
+
+  total_max_node_count: (Optional) Total maximum number of nodes in the NodePool. Must be >= total_min_node_count. Cannot be used with per zone limits. Total size limits are supported only in 1.24.1+ clusters.
   
   node_labels: Kubernetes labels (key-value pairs) to be applied to each node. The kubernetes.io/
   and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified.
