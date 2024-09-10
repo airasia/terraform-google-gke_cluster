@@ -224,8 +224,17 @@ resource "google_container_node_pool" "node_pools" {
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
-    taint           = each.value.node_taints
-    metadata        = each.value.node_metadatas #see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata
+    dynamic "taint" {
+      for_each = each.value.node_taints
+      iterator = "node_taint"
+
+      content {
+        key    = node_taint.value.key
+        value  = ndoe_taint.value.key
+        effect = node_taint.value.effect
+      }
+    }
+    metadata = each.value.node_metadatas #see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster#metadata
     dynamic "guest_accelerator" {
       for_each = each.value.gpu_type == null ? [] : [each.value.gpu_type]
       content {
