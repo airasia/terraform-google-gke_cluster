@@ -226,7 +226,7 @@ resource "google_container_node_pool" "node_pools" {
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
     dynamic "taint" {
       for_each = each.value.node_taints
-      iterator = "node_taint"
+      iterator = node_taint
 
       content {
         key    = node_taint.value.key
