@@ -227,7 +227,6 @@ resource "google_container_node_pool" "node_pools" {
     dynamic "taint" {
       for_each = each.value.node_taints
       iterator = node_taint
-
       content {
         key    = node_taint.value.key
         value  = ndoe_taint.value.key
