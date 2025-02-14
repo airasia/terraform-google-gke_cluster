@@ -214,6 +214,14 @@ resource "google_container_node_pool" "node_pools" {
     max_surge       = each.value.max_surge
     max_unavailable = each.value.max_unavailable
   }
+  dynamic "network_config" {
+    for_each = each.value.network_config == null ? [] : [each.value.network_config]
+    iterator = network_config
+    content {
+      create_pod_range = false
+      pod_range        = network_config.value.pod_range
+    }
+  }
   node_config {
     machine_type    = each.value.machine_type
     disk_type       = each.value.disk_type
@@ -229,7 +237,7 @@ resource "google_container_node_pool" "node_pools" {
       iterator = node_taint
       content {
         key    = node_taint.value.key
-        value  = ndoe_taint.value.key
+        value  = node_taint.value.value
         effect = node_taint.value.effect
       }
     }
@@ -249,6 +257,15 @@ resource "google_container_node_pool" "node_pools" {
     }
     workload_metadata_config {
       mode = each.value.enable_gke_metadata_server && var.enable_workload_identity ? "GKE_METADATA" : "GCE_METADATA"
+    }
+    dynamic "kubelet_config" {
+      for_each = each.value.kubelet_config == null ? [] : [each.value.kubelet_config]
+      iterator = kubelet_config
+      content {
+        cpu_cfs_quota      = kubelet_config.value.cpu_cfs_quota
+        cpu_manager_policy = kubelet_config.value.cpu_manager_policy
+        pod_pids_limit     = kubelet_config.value.pod_pids_limit
+      }
     }
   }
   lifecycle {
