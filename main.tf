@@ -122,6 +122,12 @@ resource "google_container_cluster" "k8s_cluster" {
       security_group = var.security_group_name
     }
   }
+  dynamic "cluster_autoscaling" {
+    for_each = var.cluster_autoscaling_profile == null ? [] : [0]
+    content {
+      autoscaling_profile = var.cluster_autoscaling_profile
+    }
+  }
   workload_identity_config {
     workload_pool = var.enable_workload_identity ? "${data.google_client_config.google_client.project}.svc.id.goog" : null
   }
@@ -202,9 +208,11 @@ resource "google_container_node_pool" "node_pools" {
   initial_node_count = each.value.node_count_min_per_zone
   max_pods_per_node  = each.value.max_pods_per_node
   autoscaling {
-    min_node_count  = each.value.node_count_min_per_zone
-    max_node_count  = each.value.node_count_max_per_zone
-    location_policy = var.location_policy
+    min_node_count       = each.value.node_count_min_per_zone
+    max_node_count       = each.value.node_count_max_per_zone
+    location_policy      = var.location_policy
+    total_min_node_count = each.value.total_min_node_count
+    total_max_node_count = each.value.total_max_node_count
   }
   management {
     auto_repair  = true

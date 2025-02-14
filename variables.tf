@@ -247,6 +247,10 @@ variable "node_pools" {
   
   node_count_max_per_zone: The maximum number of nodes (per zone) this nodepool will allocate if
   auto-up-scaling occurs.
+
+  total_min_node_count: (Optional) Total minimum number of nodes in the NodePool. Must be >=0 and <= total_max_node_count. Cannot be used with per zone limits. Total size limits are supported only in 1.24.1+ clusters.
+
+  total_max_node_count: (Optional) Total maximum number of nodes in the NodePool. Must be >= total_min_node_count. Cannot be used with per zone limits. Total size limits are supported only in 1.24.1+ clusters.
   
   node_labels: Kubernetes labels (key-value pairs) to be applied to each node. The kubernetes.io/
   and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified.
@@ -305,7 +309,9 @@ variable "node_pools" {
   type = list(object({
     node_pool_name             = string
     node_count_min_per_zone    = number
+    total_min_node_count       = number
     node_count_max_per_zone    = number
+    total_max_node_count       = number
     node_labels                = map(string)
     node_taints                = list(object({ key = string, value = string, effect = string }))
     max_pods_per_node          = number
@@ -327,7 +333,9 @@ variable "node_pools" {
   default = [{
     node_pool_name             = "gkenp-a"
     node_count_min_per_zone    = 1
+    total_min_node_count       = null
     node_count_max_per_zone    = 2
+    total_max_node_count       = null
     node_labels                = {}
     node_taints                = []
     max_pods_per_node          = 16
@@ -426,6 +434,12 @@ variable "security_group_name" {
 
 variable "security_bulletins_topic" {
   description = "The ID of pubsub topic to send security bulletin notifications. Must be in the same project as the cluster."
+  type        = string
+  default     = null
+}
+
+variable "cluster_autoscaling_profile" {
+  description = "Can be BALANCED or OPTIMIZE_UTILIZATION. The decision of when to remove a node is a trade-off between optimizing for utilization or the availability of resources. Removing underutilized nodes improves cluster utilization, but new workloads might have to wait for resources to be provisioned again before they can run."
   type        = string
   default     = null
 }
