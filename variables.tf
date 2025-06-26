@@ -330,7 +330,7 @@ variable "node_pools" {
     node_count_min_per_zone    = 1
     node_count_max_per_zone    = 2
     node_labels                = {}
-    node_resource_labels       = []
+    node_resource_labels       = {}
     node_taints                = []
     max_pods_per_node          = 16
     network_tags               = []
