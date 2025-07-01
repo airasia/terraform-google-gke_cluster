@@ -223,15 +223,15 @@ resource "google_container_node_pool" "node_pools" {
     }
   }
   node_config {
-    machine_type    = each.value.machine_type
-    disk_type       = each.value.disk_type
-    disk_size_gb    = each.value.disk_size_gb
-    preemptible     = each.value.preemptible
-    spot            = each.value.spot
-    labels          = merge(local.predefined_node_labels, each.value.node_labels)
-   resource_labels = merge(
-    { goog-gke-node-pool-provisioning-model = each.value.spot ? "spot" : "on-demand" },
-    each.value.node_resource_labels )
+    machine_type = each.value.machine_type
+    disk_type    = each.value.disk_type
+    disk_size_gb = each.value.disk_size_gb
+    preemptible  = each.value.preemptible
+    spot         = each.value.spot
+    labels       = merge(local.predefined_node_labels, each.value.node_labels)
+    resource_labels = merge(
+      { goog-gke-node-pool-provisioning-model = each.value.spot ? "spot" : "on-demand" },
+    each.value.node_resource_labels)
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
