@@ -264,7 +264,7 @@ resource "google_container_node_pool" "node_pools" {
       content {
         cpu_cfs_quota      = kubelet_config.value.cpu_cfs_quota
         cpu_manager_policy = kubelet_config.value.cpu_manager_policy
-        pod_pids_limit     = kubelet_config.value.pod_pids_limit
+        #pod_pids_limit     = kubelet_config.value.pod_pids_limit
       }
     }
   }
