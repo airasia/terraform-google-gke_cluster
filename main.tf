@@ -36,7 +36,7 @@ locals {
         ["bad location_type"] # will force an error
   )))
 
-  predefined_node_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
+  predefined_node_resource_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
 
   k8s_secrets = flatten([
     for namespace_obj in var.namespaces : [
@@ -234,7 +234,7 @@ resource "google_container_node_pool" "node_pools" {
     # GKE automatically adds several resource labels to node pools. They should not be modified or deleted.
     # see https://cloud.google.com/kubernetes-engine/docs/how-to/creating-managing-labels#automatically-applied-labels
     resource_labels = merge(
-      local.predefined_node_labels,
+      local.predefined_node_resource_labels,
       { goog-gke-node-pool-provisioning-model = each.value.spot ? "spot" : "on-demand" },
       try(each.value.node_resource_labels, {})
     )
