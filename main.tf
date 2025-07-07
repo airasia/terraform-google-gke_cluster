@@ -36,7 +36,7 @@ locals {
         ["bad location_type"] # will force an error
   )))
 
-  predefined_node_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
+  predefined_node_resource_labels = { TF_used_for = "gke", TF_used_by = google_container_cluster.k8s_cluster.name }
 
   k8s_secrets = flatten([
     for namespace_obj in var.namespaces : [
@@ -223,12 +223,21 @@ resource "google_container_node_pool" "node_pools" {
     }
   }
   node_config {
-    machine_type    = each.value.machine_type
-    disk_type       = each.value.disk_type
-    disk_size_gb    = each.value.disk_size_gb
-    preemptible     = each.value.preemptible
-    spot            = each.value.spot
-    labels          = merge(local.predefined_node_labels, each.value.node_labels)
+    machine_type = each.value.machine_type
+    disk_type    = each.value.disk_type
+    disk_size_gb = each.value.disk_size_gb
+    preemptible  = each.value.preemptible
+    spot         = each.value.spot
+    # Kubernetes node labels that can be used in node selectors to control how workloads are scheduled to nodes
+    labels = each.value.node_labels
+    # Resource labels are used to manage resources in GCP organization and to breakdown resources.
+    # GKE automatically adds several resource labels to node pools. They should not be modified or deleted.
+    # see https://cloud.google.com/kubernetes-engine/docs/how-to/creating-managing-labels#automatically-applied-labels
+    resource_labels = merge(
+      local.predefined_node_resource_labels,
+      { goog-gke-node-pool-provisioning-model = each.value.spot ? "spot" : "on-demand" },
+      try(each.value.node_resource_labels, {})
+    )
     service_account = module.gke_service_account.email
     oauth_scopes    = local.oauth_scopes
     tags            = distinct(concat(local.default_network_tags, each.value.network_tags))
