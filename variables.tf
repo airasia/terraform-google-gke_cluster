@@ -306,8 +306,8 @@ variable "node_pools" {
     node_pool_name             = string
     node_count_min_per_zone    = number
     node_count_max_per_zone    = number
-    node_labels                = map(string)
     node_resource_labels       = optional(map(string), {})
+    node_labels                = map(string)
     node_taints                = list(object({ key = string, value = string, effect = string }))
     max_pods_per_node          = number
     network_tags               = list(string)
