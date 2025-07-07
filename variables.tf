@@ -247,6 +247,11 @@ variable "node_pools" {
   
   node_count_max_per_zone: The maximum number of nodes (per zone) this nodepool will allocate if
   auto-up-scaling occurs.
+
+  node_resource_labels: The GCE resource labels (a map of key/value pairs) to be applied to the nodes.
+  Resource labels are applied to all nodes and persistent disks in the node pool. It can be used to track information
+  about billing and usage. GKE automatically adds several resource labels to node pools. They should not be modified or deleted.
+  See https://cloud.google.com/kubernetes-engine/docs/how-to/creating-managing-labels#automatically-applied-labels
   
   node_labels: Kubernetes labels (key-value pairs) to be applied to each node. The kubernetes.io/
   and k8s.io/ prefixes are reserved by Kubernetes Core components and cannot be specified.
