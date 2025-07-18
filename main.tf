@@ -36,7 +36,7 @@ locals {
         ["bad location_type"] # will force an error
   )))
 
-  predefined_node_resource_labels = { tf-used-for = "gke", tf-used_by = google_container_cluster.k8s_cluster.name }
+  predefined_node_resource_labels = { tf-used-for = "gke", tf-used-by = google_container_cluster.k8s_cluster.name }
 
   k8s_secrets = flatten([
     for namespace_obj in var.namespaces : [
