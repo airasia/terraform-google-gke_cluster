@@ -414,13 +414,14 @@ variable "ip_address_timeout" {
 }
 
 variable "nginx_controller" {
-  description      = "Whether to have a NGINX Ingress Controller installed in this cluster; with a dedicated IP. Refer to the IP name in var.nginx_ip_names to be used here."
-  type             = object({
+  description = "Whether to have a NGINX Ingress Controller installed in this cluster; with a dedicated IP. Refer to the IP name in var.nginx_ip_names to be used here."
+  type = object({
     enabled        = bool
     ip_name        = string
     replica_count  = optional(number, 2)
     memory_request = optional(string, "256Mi")
     memory_limit   = optional(string, "512Mi")
+    update_status  = optional(bool, true) ## extraArgs:
   })
   default = {
     enabled = false

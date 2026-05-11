@@ -360,12 +360,12 @@ resource "helm_release" "nginx_ingress_controller" {
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
   version          = "4.11.5"
-  
+
   values = [
     # values.yaml file contents copied from official repo at https://github.com/kubernetes/ingress-nginx/releases/tag/helm-chart-4.11.5
     file("${path.module}/helm/nginx-ingress-values.yaml")
   ]
-  
+
   set_sensitive {
     name  = "controller.service.loadBalancerIP"
     value = google_compute_address.static_nginx_ip[var.nginx_controller.ip_name].address
@@ -382,6 +382,10 @@ resource "helm_release" "nginx_ingress_controller" {
   set {
     name  = "controller.resources.limits.memory"
     value = var.nginx_controller.memory_limit
+  }
+  set {
+    name  = "controller.extraArgs.update-status"
+    value = var.nginx_controller.update_status
   }
 
   depends_on = [google_container_cluster.k8s_cluster, google_compute_address.static_nginx_ip]
