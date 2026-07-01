@@ -7,7 +7,7 @@ terraform {
     }
     google-beta = {
       source  = "hashicorp/google-beta"
-      version = ">= 4.55.0" # see https://github.com/terraform-providers/terraform-provider-google-beta/releases
+      version = ">= 7.12.0" # secret_sync_config support was added in v7.12.0
     }
   }
 }
@@ -124,6 +124,19 @@ resource "google_container_cluster" "k8s_cluster" {
   }
   workload_identity_config {
     workload_pool = var.enable_workload_identity ? "${data.google_client_config.google_client.project}.svc.id.goog" : null
+  }
+  dynamic "secret_sync_config" {
+    for_each = var.enable_secret_sync ? [1] : []
+    content {
+      enabled = true
+      dynamic "rotation_config" {
+        for_each = var.enable_secret_sync_rotation ? [1] : []
+        content {
+          enabled           = true
+          rotation_interval = var.secret_sync_rotation_interval
+        }
+      }
+    }
   }
   ip_allocation_policy {
     cluster_secondary_range_name  = var.pods_ip_range_name

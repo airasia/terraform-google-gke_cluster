@@ -122,6 +122,29 @@ variable "enable_workload_identity" {
   default     = false
 }
 
+variable "enable_secret_sync" {
+  description = "Enable synchronization of Secret Manager secrets to Kubernetes Secrets. Requires GKE 1.33 or later and Workload Identity Federation for GKE."
+  type        = bool
+  default     = false
+}
+
+variable "enable_secret_sync_rotation" {
+  description = "Enable automatic rotation for synchronized Kubernetes Secrets. This is used only when enable_secret_sync is true."
+  type        = bool
+  default     = false
+}
+
+variable "secret_sync_rotation_interval" {
+  description = "Interval between checks for updated Secret Manager secret versions. This is used only when secret sync rotation is enabled. The minimum supported interval is 60s."
+  type        = string
+  default     = "300s"
+
+  validation {
+    condition     = can(regex("^([6-9][0-9]|[1-9][0-9]{2,})s$", var.secret_sync_rotation_interval))
+    error_message = "secret_sync_rotation_interval must be at least 60 seconds and use whole seconds, for example \"300s\"."
+  }
+}
+
 variable "enable_shielded_nodes" {
   description = "Enable Shielded Nodes feature on all nodes in the cluster. Toggling this value will drain, delete, and recreate all nodes in all node pools of this cluster. This may take a lot of time, depending on cluster size, usage and maintenance windows."
   type        = bool

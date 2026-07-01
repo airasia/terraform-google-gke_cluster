@@ -1,5 +1,22 @@
 Terraform module for a GKE Kubernetes Cluster in GCP
 
+## Secret synchronization
+
+Secret Manager secrets can be synchronized to Kubernetes Secrets on GKE 1.33 or later. This feature requires Workload Identity Federation for GKE and `google-beta` provider v7.12.0 or later.
+
+```terraform
+module "gke_cluster" {
+  source  = "airasia/gke_cluster/google"
+  version = "<VERSION_WITH_SECRET_SYNC_SUPPORT>"
+
+  # ... existing configuration
+  enable_workload_identity         = true
+  enable_secret_sync               = true
+  enable_secret_sync_rotation      = true
+  secret_sync_rotation_interval    = "300s"
+}
+```
+
 # Using Helm Charts to install Ingress Nginx
 
 If you want to utilize this feature make sure to declare a `helm` provider in your terraform configuration as follows.
