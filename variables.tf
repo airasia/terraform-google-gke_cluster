@@ -343,6 +343,8 @@ variable "node_pools" {
 
   oauth_scopes: (Optional) Use if you want to override the default https://www.googleapis.com/auth/cloud-platform scope when creating node pools.
 
+  node_locations: (Optional) List of zone letters (e.g. ["a"]) to pin this node pool to specific zones, overriding the cluster-level node locations. Useful for deploying a node pool in a single zone. When null, the node pool inherits the cluster’s node locations.
+
   EOT
   type = list(object({
     node_pool_name             = string
@@ -367,6 +369,7 @@ variable "node_pools" {
     kubelet_config             = any
     network_config             = object({ pod_range = string })
     oauth_scopes               = list(string)
+    node_locations             = optional(any, null)
   }))
   default = [{
     node_pool_name             = "gkenp-a"
@@ -391,7 +394,14 @@ variable "node_pools" {
     kubelet_config             = null
     network_config             = null
     oauth_scopes               = null
+    node_locations             = null
   }]
+}
+
+variable "node_pool_locations" {
+  description = "Map of node pool name to zone letters for zone pinning (e.g. {\"spot-np\" = [\"a\"]}). When a pool name is present, it overrides the pool's node_locations field. Empty map means all pools inherit cluster-level node locations."
+  type        = map(list(string))
+  default     = {}
 }
 
 variable "cluster_logging_service" {
