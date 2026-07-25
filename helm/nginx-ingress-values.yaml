@@ -875,7 +875,7 @@ controller:
       # externalTrafficPolicy: ""
       # nodePort: ""
     serviceMonitor:
-      enabled: false
+      enabled: true
       additionalLabels: {}
       # -- Annotations to be added to the ServiceMonitor.
       annotations: {}
