@@ -479,3 +479,11 @@ variable "security_bulletins_topic" {
   type        = string
   default     = null
 }
+
+variable "secret_manager_config" {
+  description = "Configures the Secret Manager add-on for the cluster. Once enabled, cannot be disabled via the GCP API."
+  type = object({
+    enabled = bool
+  })
+  default = null
+}
