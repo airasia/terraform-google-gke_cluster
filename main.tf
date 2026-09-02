@@ -198,6 +198,12 @@ resource "google_container_cluster" "k8s_cluster" {
       }
     }
   }
+  dynamic "secret_manager_config" {
+    for_each = var.secret_manager_config != null ? [var.secret_manager_config] : []
+    content {
+      enabled = secret_manager_config.value.enabled
+    }
+  }
   depends_on = [google_project_service.container_api]
   timeouts {
     create = var.cluster_timeout
